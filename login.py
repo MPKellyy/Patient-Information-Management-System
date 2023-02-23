@@ -10,7 +10,7 @@ def openLogin():
     frm.grid()
 
     usernameEntry = ttk.Entry(root, width=40)
-
+    usernameEntry.place(x=550, y=280)
     passwordEntry = ttk.Entry(root, width=40, show='*')
     passwordEntry.place(x=550, y=320)
     usernameLabel = ttk.Label(root, text="Username:")
