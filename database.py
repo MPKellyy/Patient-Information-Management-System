@@ -5,7 +5,7 @@ import pymysql
 
 host = "please consult the discord for this link"   # DO NOT COMMIT THIS LINK TO THE REPO OR ANYONE WHO GRABS IT
                                                     # CAN MESS WITH DATA IN THE DB
-                                                    # will look into a more permanent solution
+                                                    # will look into a more permanent solution.
 port = 3306
 user = 'admin'
 password = 'AdminPass'
