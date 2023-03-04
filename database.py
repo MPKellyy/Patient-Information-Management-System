@@ -4,8 +4,8 @@ import pandas as pd
 import pymysql
 class Database:
 
-    def __int__(self, host):
-        self.host = host                                    # DO NOT COMMIT THIS LINK TO THE REPO OR ANYONE WHO GRABS IT
+    def __init__(self, host):
+        #host = host                                    # DO NOT COMMIT THIS LINK TO THE REPO OR ANYONE WHO GRABS IT
                                                             # CAN MESS WITH DATA IN THE DB
                                                             # will look into a more permanent solution.
         port = 3306
@@ -13,8 +13,10 @@ class Database:
         password = 'AdminPass'
         database = "patient_information"
 
-        self.connection = pymysql.connect(host=host, user=user, port=port, passwd=password, db=database)
+        self.connection = pymysql.connect(host=host, user=user,
+                                          port=port, passwd=password, db=database)
 
+    #simple skeleton for a select function
     def select(self):
         with self.connection:
             cur = self.connection.cursor()
@@ -23,6 +25,7 @@ class Database:
             print(format(output))                  # prints output to console
 
 
-def main():
-    poggers = Database("patient-info.c7dbj8qezzsr.us-east-2.rds.amazonaws.com")
-    poggers.select()
+poggers = Database("get the link from the discord")
+poggers.select()
+
+
