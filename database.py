@@ -2,20 +2,25 @@
 # -*- coding: utf-8 -*-
 import pandas as pd
 import pymysql
+import cryptography
 from consts import *
 
 
 class Database:
-    def __init__(self):
-        connection = pymysql.connect(host=HOST, user=USER, port=PORT,
+    def __init__(self, USER, PASSWORD):
+        self.connection = pymysql.connect(host=HOST, user=USER, port=PORT,
                                      passwd=PASSWORD, db=DATABASE)
-        self.cursor = connection.cursor()
+        self.cursor = self.connection.cursor()
+
 
     def execute(self, query):
         self.cursor.execute(query)
         output = self.cursor.fetchall()
         print(format(output))
         return output
+
+    def commitChanges(self):
+        self.connection.commit()
 
     def select(self, arg1, arg2):
         self.cursor.execute("SELECT " + arg1 + " FROM " + arg2 + ";")  # execute query
@@ -31,7 +36,7 @@ class Database:
 
 
 poggers = Database()
-poggers.execute("SELECT * from doctors")
-poggers.select('*', 'doctors')
-poggers.select_all('doctors')
+poggers.execute("SHOW GRANTS FOR 'jamiller'")
+poggers.select('*', 'Accounts')
+poggers.select_all('Accounts')
 
