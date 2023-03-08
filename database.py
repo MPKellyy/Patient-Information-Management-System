@@ -35,8 +35,8 @@ class Database:
         return output
 
 
-poggers = Database()
-poggers.execute("SHOW GRANTS FOR 'jamiller'")
-poggers.select('*', 'Accounts')
-poggers.select_all('Accounts')
+poggers = Database("username", "password")
+#poggers.execute("ALTER TABLE Accounts ALTER COLUMN Password SET INVISIBLE;")
+poggers.select('Password', 'Accounts')
+#poggers.select_all('Accounts')
 
