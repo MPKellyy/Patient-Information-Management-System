@@ -1,3 +1,3 @@
 import login
 
-login.openLogin()
+login.run_gui()
