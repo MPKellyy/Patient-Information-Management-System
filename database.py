@@ -9,9 +9,8 @@ from consts import *
 class Database:
     def __init__(self, USER, PASSWORD):
         self.connection = pymysql.connect(host=HOST, user=USER, port=PORT,
-                                     passwd=PASSWORD, db=DATABASE)
+                                          passwd=PASSWORD, db=DATABASE)
         self.cursor = self.connection.cursor()
-
 
     def execute(self, query):
         self.cursor.execute(query)
@@ -19,8 +18,15 @@ class Database:
         print(format(output))
         return output
 
-    def commitChanges(self):
+    def commit_changes(self):
         self.connection.commit()
+
+    def search_patient_by_name(self, name):
+        # not yet functional
+        self.execute("SELECT * FROM Patients WHERE fname=" + name)
+
+    def see_columns(self, table):
+        self.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='" + table + "'")
 
     def select(self, arg1, arg2):
         self.cursor.execute("SELECT " + arg1 + " FROM " + arg2 + ";")  # execute query
@@ -35,8 +41,9 @@ class Database:
         return output
 
 
-poggers = Database("username", "password")
-#poggers.execute("ALTER TABLE Accounts ALTER COLUMN Password SET INVISIBLE;")
+poggers = Database("admin", "AdminPass")
+# poggers.execute("ALTER TABLE Accounts ALTER COLUMN Password SET INVISIBLE;")
 poggers.select('Password', 'Accounts')
-#poggers.select_all('Accounts')
+poggers.see_columns("Patients")
+
 
