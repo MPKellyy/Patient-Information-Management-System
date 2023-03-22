@@ -147,5 +147,5 @@ def dict_to_string(input_dict, delimiter=" - "):
 
 
 # Testing code
-testing = Account("Michael", 0)  # Creating account of tier 2
+testing = Account("Michael", 2)  # Creating account of tier 2
 save_reports(testing)  # Saving sample patient data to pdf report
