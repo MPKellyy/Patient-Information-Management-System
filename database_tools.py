@@ -40,8 +40,22 @@ def account_creation_test():
     display_accounts()
 
 
-def create_table(table_name, data_dict={}):
-    poggers.execute("CREATE TABLE " + str(table_name) + " (test_id INT);")
+def create_table(table_name, col_dict={"co1": "INT"}):
+    if len(col_dict) == 0:
+        print("Aborting table creation, must have at least one dictionary entry")
+        return
+
+    query = "CREATE TABLE " + str(table_name) + " ( "
+
+    for col_name in col_dict.keys():
+        query += col_name + " " + col_dict[col_name] + ", "
+
+    query = query[:-2]
+    query += ");"
+
+    # print(query)
+
+    poggers.execute(query)
     poggers.commitChanges()
 
 
@@ -51,20 +65,26 @@ def delete_table(table_name):
 
 
 def display_tables():
-    poggers.execute("SHOW TABLES")
+    print(poggers.execute("SHOW TABLES"))
 
 
-# TODO: Add this test to a separate test file, currently NOT working
 def table_creation_test():
     print("***Before table creation***")
     display_tables()
     print("***After table creation***")
-    create_table("test_table")
+    create_table("test_table", {"col1": "INT", "col2": "INT"})
     display_tables()
     print("***After table deletion***")
     delete_table("test_table")
     display_tables()
 
 
-display_accounts(permissions=True)
-#display_accounts()
+def display_accounts_test():
+    print("Displaying accounts without permissions flag:")
+    display_accounts()
+
+    print("Displaying accounts with permissions flag set:")
+    display_accounts(permissions=True)
+
+
+# table_creation_test()
