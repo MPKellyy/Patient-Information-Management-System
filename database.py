@@ -12,11 +12,10 @@ class Database:
                                      passwd=PASSWORD, db=DATABASE)
         self.cursor = self.connection.cursor()
 
-
     def execute(self, query):
         self.cursor.execute(query)
         output = self.cursor.fetchall()
-        print(format(output))
+        # print(format(output))
         return output
 
     def commitChanges(self):
@@ -25,18 +24,18 @@ class Database:
     def select(self, arg1, arg2):
         self.cursor.execute("SELECT " + arg1 + " FROM " + arg2 + ";")  # execute query
         output = self.cursor.fetchall()  # puts output into a string
-        print(format(output))  # prints output to console
+        # print(format(output))  # prints output to console
         return output
 
     def select_all(self, arg1):
         self.cursor.execute("SELECT * FROM " + arg1 + ";")  # queries the doctors table
         output = self.cursor.fetchall()  # puts output into a string
-        print(format(output))  # prints output to console
+        # print(format(output))  # prints output to console
         return output
 
 
+# TODO: Add the correct user/pass to access db
 poggers = Database("username", "password")
-#poggers.execute("ALTER TABLE Accounts ALTER COLUMN Password SET INVISIBLE;")
-poggers.select('Password', 'Accounts')
-#poggers.select_all('Accounts')
-
+#poggers.execute("SELECT * from doctors")
+#poggers.select('*', 'doctors')
+#poggers.select_all('doctors')
