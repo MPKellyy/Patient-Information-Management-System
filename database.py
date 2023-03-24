@@ -39,8 +39,9 @@ class Database:
         print(format(output))  # prints output to console
         return output
 
-
-poggers = Database("username", "password")
+user = input("enter username:")
+passw = input("enter password:")
+poggers = Database(user, passw)
 #poggers.execute("ALTER TABLE Accounts ALTER COLUMN Password SET INVISIBLE;")
 #poggers.select('*', 'Accounts')
 poggers.select_all('Accounts')
