@@ -28,14 +28,19 @@ class Database:
         return output
 
     def select_all(self, arg1):
-        self.cursor.execute("SELECT * FROM " + arg1 + ";")  # queries the doctors table
-        output = self.cursor.fetchall()  # puts output into a string
-        # print(format(output))  # prints output to console
+        try:
+            self.cursor.execute("SELECT * FROM " + arg1 + ";")  # queries the doctors table
+            output = self.cursor.fetchall()  # puts output into a string
+        except pymysql.err.ProgrammingError: #in case table doesnt exist
+            output = "Table Does not exist"
+        except pymysql.err.OperationalError:
+            output = "Access denied"
+        print(format(output))  # prints output to console
         return output
 
-
-# TODO: Add the correct user/pass to access db
-poggers = Database("username", "password")
-#poggers.execute("SELECT * from doctors")
-#poggers.select('*', 'doctors')
-#poggers.select_all('doctors')
+user = input("enter username:")
+passw = input("enter password:")
+poggers = Database(user, passw)
+#poggers.execute("ALTER TABLE Accounts ALTER COLUMN Password SET INVISIBLE;")
+#poggers.select('*', 'Accounts')
+poggers.select_all('Accounts')
