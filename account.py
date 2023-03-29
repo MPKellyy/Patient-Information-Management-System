@@ -13,8 +13,3 @@ class Account:
 
     def get_tier(self):
         return self.__tier
-
-
-test = Account(35355, 3)
-
-print(test.get_tier())
