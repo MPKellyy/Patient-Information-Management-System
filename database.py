@@ -4,6 +4,7 @@ import pandas as pd
 import pymysql
 import cryptography
 from consts import *
+from patient import Patient
 
 
 class Database:
@@ -29,7 +30,7 @@ class Database:
 
     def select_all(self, arg1):
         try:
-            self.cursor.execute("SELECT * FROM " + arg1 + ";")  # queries the doctors table
+            self.cursor.execute("SELECT * FROM " + arg1 + ";")  # queries the table
             output = self.cursor.fetchall()  # puts output into a string
         except pymysql.err.ProgrammingError: #in case table doesnt exist
             output = "Table Does not exist"
@@ -38,9 +39,37 @@ class Database:
         print(format(output))  # prints output to console
         return output
 
-user = input("enter username:")
-passw = input("enter password:")
+    def create_random_patient(self, patientID):
+        # any Patient object with no input parameters will be filled with random data
+        return Patient(self.get_next_id())
+
+    def insert_patient(self, patient):
+        fields = ''
+        values = ''
+        for key in patient.data.keys():
+            if patient.data[key]:
+                fields += key + ', '
+                values += '\'' + str(patient.data[key]) + '\','
+
+        # strip trailing commas
+        fields = fields[:-2]
+        values = values[:-1]
+        query = "INSERT INTO patient_medical (" + fields + ') VALUES (' + values + ');'
+        print(query)
+        self.cursor.execute(query)
+
+    def get_next_id(self):
+        # TODO: query database for largest patientID
+        return '00000001'
+
+    def see_columns(self, table):
+        self.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='" + table + "'")
+
+user = 'root'
+passw = 'AdminPass'
 poggers = Database(user, passw)
 #poggers.execute("ALTER TABLE Accounts ALTER COLUMN Password SET INVISIBLE;")
 #poggers.select('*', 'Accounts')
-poggers.select_all('Accounts')
+poggers.select_all('patient_medical')
+
+
