@@ -38,6 +38,10 @@ class Database:
         print(format(output))  # prints output to console
         return output
 
+    def close(self):
+        self.cursor.close();
+        self.connection.close();
+
 # user = input("enter username:")
 # passw = input("enter password:")
 # db = Database(user, passw)
