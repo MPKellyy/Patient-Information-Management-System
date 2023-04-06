@@ -39,8 +39,8 @@ class Database:
         return output
 
     def close(self):
-        self.cursor.close();
-        self.connection.close();
+        self.cursor.close()
+        self.connection.close()
 
 # user = input("enter username:")
 # passw = input("enter password:")
