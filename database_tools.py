@@ -7,8 +7,8 @@ def create_account(user_name, password, tier=0):
     if tier not in tiers:
         tier = 0
 
-    poggers.execute("CREATE USER '" + str(user_name) + "' IDENTIFIED BY '" + str(password) + "';");
-    poggers.commitChanges()
+    db.execute("CREATE USER '" + str(user_name) + "' IDENTIFIED BY '" + str(password) + "';");
+    db.commitChanges()
 
     # TODO: Limit some columns to INSERT/SELECT/UPDATE only
     if tier == 0:
@@ -20,12 +20,12 @@ def create_account(user_name, password, tier=0):
 
 
 def delete_account(user_name):
-    poggers.execute("DROP USER " + str(user_name) + ";")
-    poggers.commitChanges()
+    db.execute("DROP USER " + str(user_name) + ";")
+    db.commitChanges()
 
 
 def display_accounts(permissions=False):
-    accounts = poggers.select("user", "mysql.user")
+    accounts = db.select("user", "mysql.user")
     virtual_databases = ["mysql.infoschema", "mysql.session", "mysql.sys", "rdsadmin"]
 
     for account in accounts:
@@ -56,12 +56,12 @@ def set_account_permission(user_name, table_name, col_names, permissions):
     query = query[:-2]
     query += ") ON " + str(table_name) + " TO " + str(user_name) + ";"
 
-    poggers.execute(query)
-    poggers.commitChanges()
+    db.execute(query)
+    db.commitChanges()
 
 
 def show_account_permissions(user_name):
-    permissions = poggers.execute("SHOW GRANTS FOR " + user_name + ";")
+    permissions = db.execute("SHOW GRANTS FOR " + user_name + ";")
 
     for permission in permissions:
         print(permission[0])
@@ -80,17 +80,17 @@ def create_table(table_name, col_dict={"col1": "INT"}):
     query = query[:-2]
     query += ");"
 
-    poggers.execute(query)
-    poggers.commitChanges()
+    db.execute(query)
+    db.commitChanges()
 
 
 def delete_table(table_name):
-    poggers.execute("DROP TABLE " + str(table_name) + ";")
-    poggers.commitChanges()
+    db.execute("DROP TABLE " + str(table_name) + ";")
+    db.commitChanges()
 
 
 def display_tables():
-    print(poggers.execute("SHOW TABLES"))
+    print(db.execute("SHOW TABLES"))
     print("")
 
 
@@ -173,7 +173,9 @@ def reset(user, table):
     except:
         pass
 
-
+user = input("enter username:")
+passw = input("enter password:")
+db = Database(user, passw)
 #account_creation_test()
 #table_creation_test()
 #display_accounts_test()

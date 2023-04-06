@@ -2,7 +2,11 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 
+import pymysql.err
 
+import database
+
+db = ""
 def run_gui():
     root = Tk()
     root.title("Patient Information Management")
@@ -141,7 +145,10 @@ def run_gui():
         buttons_frame.pack()
         buttons_frame.pack_propagate(False)
         buttons_frame.place(anchor='nw', x=10, y=600)
+
         def log_out():
+            global db
+            db = ""
             print('bye')
             search_frame.destroy()
             results_frame.destroy()
@@ -152,7 +159,6 @@ def run_gui():
         logout_button.pack(anchor='w', side=LEFT, padx=20)
 
         def patient_select(e):
-            # todo: make this go to patient page
             print('click')
             search_frame.destroy()
             results_frame.destroy()
@@ -196,11 +202,20 @@ def run_gui():
         # function that runs when Log In button is pressed - should eventually
         # query database and either display error message or move to landing page
         def login():
-            print(username_entry.get())
-            username_entry.delete(first=0, last=tk.END)
-            print(password_entry.get())
-            password_entry.delete(first=0, last=tk.END)
-            if 1:
+            # print(username_entry.get())
+            # username_entry.delete(first=0, last=tk.END)
+            # print(password_entry.get())
+            # password_entry.delete(first=0, last=tk.END)
+            try:
+                global db
+                db = database.Database(username_entry.get(), password_entry.get())
+            except pymysql.err.OperationalError:
+                error_label = ttk.Label(login_frame, text="Invalid Credentials", font=("Arial", 15))
+                error_label.place(x=600, y=200)
+                print("hi")
+            except:
+                print("poggers")
+            else:
                 # on successful login, destroy login frame and call function to open landing page
                 login_frame.destroy()
                 root.after(0, open_landing())
