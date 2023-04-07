@@ -334,6 +334,10 @@ def reset(username, table_name):
         pass
 
 
+user = input("enter username:")
+passw = input("enter password:")
+poggers = Database()
+poggers.connect(user,passw)
 # account_creation_test_on_dummy_tables()
 # account_creation_test_on_actual_tables()
 # table_creation_test()
