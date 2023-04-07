@@ -112,7 +112,7 @@ class Patient:
 
     def get_full_name(self):
         if self.firstname and self.lastname:
-            return self.firstname + self.lastname
+            return self.firstname + " " + self.lastname
         else:
             return 'Unknown'
 
