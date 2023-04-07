@@ -156,12 +156,12 @@ class Database:
 # db.select_all('Accounts')
 
 
-"""EXAMPLE CODE FOR DATABASE CHANGES"""
-user = 'root'
-passw = 'AdminPass'
-poggers = Database()
-poggers.connect(user, passw)
-
+# """EXAMPLE CODE FOR DATABASE CHANGES"""
+# user = 'root'
+# passw = 'AdminPass'
+# poggers = Database()
+# poggers.connect(user, passw)
+#
 # # CREATE RANDOM PATIENT example
 # # when no input is given, random patients are automatically generated until one is approved
 # poggers.add_patient()
@@ -172,25 +172,25 @@ poggers.connect(user, passw)
 # random_patient.set_age('70')
 # random_patient.set_weight('150 lbs')
 # poggers.add_patient(random_patient)  # patient will be added to database with changes
-
-# SEARCH and EDIT EXISTING PATIENT example
-patients_list = poggers.search_patient_by_name(lastname="Nagel")  # get all patients with lastname Nagel
-patient = patients_list[0]  # get first patient in list (in this case there is only one)
-patient.set_doctor_notes("Example Doctor Notes")
-print(patient.changes)
-print(patient)
-poggers.save_patient_data(patient)  # save changes to database
-poggers.commit_changes()
-
-# get patient data
-print(patient.patientID)
-print(patient.emergency_contacts)
-
-# see list of all patients
-poggers.get_all_patients()
-
-# more search by name examples
-poggers.search_patient_by_name(firstname="John")
-poggers.search_patient_by_name(firstname="John", lastname="Doe")
-poggers.search_patient_by_name(name="John Doe")
-poggers.search_patient_by_name()  # same as get_all_patients()
+#
+# # SEARCH and EDIT EXISTING PATIENT example
+# patients_list = poggers.search_patient_by_name(lastname="Nagel")  # get all patients with lastname Nagel
+# patient = patients_list[0]  # get first patient in list (in this case there is only one)
+# patient.set_doctor_notes("Example Doctor Notes")
+# print(patient.changes)
+# print(patient)
+# poggers.save_patient_data(patient)  # save changes to database
+# poggers.commit_changes()
+#
+# # get patient data
+# print(patient.patientID)
+# print(patient.emergency_contacts)
+#
+# # see list of all patients
+# poggers.get_all_patients()
+#
+# # more search by name examples
+# poggers.search_patient_by_name(firstname="John")
+# poggers.search_patient_by_name(firstname="John", lastname="Doe")
+# poggers.search_patient_by_name(name="John Doe")
+# poggers.search_patient_by_name()  # same as get_all_patients()
