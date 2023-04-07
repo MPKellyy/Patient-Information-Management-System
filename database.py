@@ -7,14 +7,10 @@ from consts import *
 
 
 class Database:
-    def __init__(self):
-        self.connection = None
-        self.cursor = None
-
-    def connect(self, USER, PASSWORD):
+    def __init__(self, USER, PASSWORD):
         self.connection = pymysql.connect(host=HOST, user=USER, port=PORT,
-                                          passwd=PASSWORD, db=DATABASE)
-        cursor = self.connection.cursor()
+                                     passwd=PASSWORD, db=DATABASE)
+        self.cursor = self.connection.cursor()
 
     def execute(self, query):
         self.cursor.execute(query)
@@ -42,14 +38,9 @@ class Database:
         print(format(output))  # prints output to console
         return output
 
-    def close(self):
-        self.cursor.close()
-        self.connection.close()
-
-
-# user = input("enter username:")
-# passw = input("enter password:")
-# db = Database(user, passw)
-# db.execute("ALTER TABLE Accounts ALTER COLUMN Password SET INVISIBLE;")
-# db.select('*', 'Accounts')
-# db.select_all('Accounts')
+user = input("enter username:")
+passw = input("enter password:")
+poggers = Database(user, passw)
+#poggers.execute("ALTER TABLE Accounts ALTER COLUMN Password SET INVISIBLE;")
+#poggers.select('*', 'Accounts')
+#poggers.select_all('Accounts')
