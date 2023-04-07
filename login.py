@@ -114,16 +114,49 @@ def run_gui():
         # name search entry field
         name_entry = ttk.Entry(search_frame, width=40)
         name_entry.pack(anchor='nw', padx=10, pady=10)
+        # set of radio buttons to select whether to search by first name, last name, or full name
+        name_radio_result = tk.IntVar()
+        name_radio_result.set(1)
+        first_name_radio = ttk.Radiobutton(search_frame, text="First Name", padding=10, value=1, variable=name_radio_result)
+        first_name_radio.pack(anchor='nw')
+        last_name_radio = ttk.Radiobutton(search_frame, text="Last Name", padding=10, value=2, variable=name_radio_result)
+        last_name_radio.pack(anchor='nw')
+        full_name_radio = ttk.Radiobutton(search_frame, text="Full Name", padding=10, value=3, variable=name_radio_result)
+        full_name_radio.pack(anchor='nw')
+
         # search button by the name entry bar
 
         def search_button_function():
             # todo: make this query db for what's in name_entry
-            print('hi')
+            # destroy existing results
             for x in results_canvas_frame.winfo_children():
                 x.destroy()
-            search_for_patients()
+            # determine whether to search first, last, or full name
+            result = name_radio_result.get()
+            if result == 1:
+                search_for_patients(firstname=name_entry.get())
+            elif result == 2:
+                search_for_patients(lastname=name_entry.get())
+            elif result == 3:
+                search_for_patients(name=name_entry.get())
+
         search_button = ttk.Button(search_frame, text="Search", command=search_button_function)
         search_button.place(x=310, y=8)
+
+        def search_for_patients(name=None, firstname=None, lastname=None):
+            global db
+            search_results = db.search_patient_by_name(name=name, firstname=firstname, lastname=lastname)
+            result_list: list[Frame] = list()
+            for i in range(len(search_results)):
+                patient = search_results[i]
+                # would have made search before this and now displaying results
+                frame = ttk.Frame(results_canvas_frame, width=800, height=80, borderwidth=5, relief='solid')
+                frame.pack()
+                frame.pack_propagate(False)
+                patient_name_label = ttk.Label(frame, text=patient.get_full_name())
+                patient_name_label.pack()
+                frame.bind('<Double-Button-1>', patient_select)
+                result_list.append(frame)
 
         # right frame, for displaying results
         results_frame = ttk.Frame(root, width=850, height=580, borderwidth=5, relief='solid', padding=0)
@@ -166,17 +199,7 @@ def run_gui():
             buttons_frame.destroy()
             open_patient_info()
 
-        def search_for_patients():
-            result_list: list[Frame] = list()
-            for i in range(200):
-                # would have made search before this and now displaying results
-                frame = ttk.Frame(results_canvas_frame, width=800, height=80, borderwidth=5, relief='solid')
-                frame.pack()
-                frame.pack_propagate(False)
-                a = ttk.Label(frame, text=str(i))
-                a.pack()
-                frame.bind('<Double-Button-1>', patient_select)
-                result_list.append(frame)
+
 
     def open_login():
         # login page frame
