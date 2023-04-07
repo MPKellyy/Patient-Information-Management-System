@@ -6,7 +6,7 @@ import pymysql.err
 
 import database
 
-db = ""
+db = database.Database()
 def run_gui():
     root = Tk()
     root.title("Patient Information Management")
@@ -148,7 +148,7 @@ def run_gui():
 
         def log_out():
             global db
-            db = ""
+            db.disconnect()
             print('bye')
             search_frame.destroy()
             results_frame.destroy()
@@ -208,7 +208,7 @@ def run_gui():
             # password_entry.delete(first=0, last=tk.END)
             try:
                 global db
-                db = database.Database(username_entry.get(), password_entry.get())
+                db.connect(username_entry.get(), password_entry.get())
             except pymysql.err.OperationalError:
                 error_label = ttk.Label(login_frame, text="Invalid Credentials", font=("Arial", 15))
                 error_label.place(x=600, y=200)
