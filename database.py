@@ -101,6 +101,9 @@ class Database:
                 firstname, lastname = literal(name.split(" ")[0]), literal(name.split(" ")[0])
             query = self.patient_table + " WHERE firstname = " + firstname + \
                     " OR lastname = " + lastname + ";"
+        elif firstname and lastname:
+            query = self.patient_table + " WHERE firstname = " + firstname + \
+                    " AND lastname = " + lastname + ";"
         elif firstname and not lastname:
             firstname = literal(firstname)
             query = self.patient_table + " WHERE firstname = " + firstname + ";"
@@ -153,7 +156,7 @@ class Database:
 # db.select_all('Accounts')
 
 
-"""EXAMPLE CODE FOR DATABASE CHANGES"""
+# """EXAMPLE CODE FOR DATABASE CHANGES"""
 # user = 'root'
 # passw = 'AdminPass'
 # poggers = Database()
@@ -185,7 +188,9 @@ class Database:
 #
 # # see list of all patients
 # poggers.get_all_patients()
-
-# more search by name examples
-poggers.search_patient_by_name(firstname="John")
-poggers.search_patient_by_name()  # same as get_all_patients()
+#
+# # more search by name examples
+# poggers.search_patient_by_name(firstname="John")
+# poggers.search_patient_by_name(firstname="John", lastname="Doe")
+# poggers.search_patient_by_name(name="John Doe")
+# poggers.search_patient_by_name()  # same as get_all_patients()
