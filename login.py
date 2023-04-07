@@ -7,6 +7,7 @@ import pymysql.err
 import database
 
 db = database.Database()
+
 def run_gui():
     root = Tk()
     root.title("Patient Information Management")
@@ -148,7 +149,7 @@ def run_gui():
 
         def log_out():
             global db
-            db.disconnect()
+            db.close()
             print('bye')
             search_frame.destroy()
             results_frame.destroy()
