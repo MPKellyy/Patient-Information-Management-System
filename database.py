@@ -7,10 +7,18 @@ from consts import *
 
 
 class Database:
-    def __init__(self, USER, PASSWORD):
+    def __init__(self):
+        self.connection = None
+        self.cursor = None
+
+    def connect(self, USER, PASSWORD):
         self.connection = pymysql.connect(host=HOST, user=USER, port=PORT,
-                                     passwd=PASSWORD, db=DATABASE)
+                                          passwd=PASSWORD, db=DATABASE)
         self.cursor = self.connection.cursor()
+
+    def disconnect(self):
+        self.cursor.close()
+        self.connection.close()
 
     def execute(self, query):
         self.cursor.execute(query)
