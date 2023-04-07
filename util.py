@@ -1,6 +1,17 @@
 import datetime
 
+
 # utilities
+
+
+# create patient ids from integer
+def create_patient_id(i):
+    i = str(i)
+    return '0' * (8 - len(i)) + i
+
+
+def literal(s):
+    return "\'" + s + "\'"
 
 
 def automate_attribute_list(s):
@@ -28,7 +39,7 @@ def automate_setters(s):
     for a in att:
         att_name = a.split('=')[0]
         print("def set_" + att_name + "(self, new): \n\tself." + att_name +
-              " = new \n\tself.data[\'" + att_name + "\'] = new \n\n")
+              " = new \n\tself.data[\'" + att_name + "\'] = new \n\tself.changes.append(" + literal(att_name) + ") \n\n")
 
 
 def automate_list(s):
@@ -48,12 +59,12 @@ def calculate_current_age(dob):
     return today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
 
 
-
-s = "patientID, firstname=None, lastname=None, room_number=None, sex=None, age=None,\
-             height=None, weight=None, race=None, dob=None, care_provider=None, current_status=None,\
-             medical_risks=None, allowed_visitors=None, restricted_visitors=None, admission_date=None,\
-             admission_reason=None, discharge_date=None, emergency_contacts=None, family_doctor=None,\
-             medical_history=None, photo=None, phone_number=None, ssn=None"
-
-# automate_attribute_list(s)
+# s = "patientID, firstname=None, lastname=None, room_number=None, sex=None, age=None, \
+#                  height=None, weight=None, race=None, dob=None, care_provider=None, current_status=None,\
+#                  medical_risks=None, allowed_visitors=None, restricted_visitors=None, admission_date=None,\
+#                  admission_reason=None, discharge_date=None, emergency_contacts=None, family_doctor=None,\
+#                  medical_history=None, photo=None, phone_number=None, ssn=None, doctor_notes=None,\
+#                  nurse_notes=None"
+#
+# # automate_attribute_list(s)
 # automate_setters(s)
