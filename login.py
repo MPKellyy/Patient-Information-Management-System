@@ -152,9 +152,18 @@ def run_gui():
                 # would have made search before this and now displaying results
                 frame = ttk.Frame(results_canvas_frame, width=800, height=80, borderwidth=5, relief='solid')
                 frame.pack()
-                frame.pack_propagate(False)
+                frame.grid_propagate(False)
+                for j in range(1, 4):
+                    frame.columnconfigure(j, weight=1)
+                frame.rowconfigure(1, weight=1)
                 patient_name_label = ttk.Label(frame, text=patient.get_full_name())
-                patient_name_label.pack()
+                patient_name_label.grid(column=1, row=1, sticky='w')
+                patient_dob_label = ttk.Label(frame, text=patient.dob)
+                patient_dob_label.grid(column=2, row=1, sticky='w')
+                patient_phone_label = ttk.Label(frame, text=patient.phone_number)
+                patient_phone_label.grid(column=3, row=1, sticky='w')
+                patient_address_label = ttk.Label(frame, text="123 Placeholder Street")
+                patient_address_label.grid(column=4, row=1, sticky='w')
                 frame.bind('<Double-Button-1>', patient_select)
                 result_list.append(frame)
 
