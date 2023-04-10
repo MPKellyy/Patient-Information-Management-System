@@ -218,8 +218,10 @@ def _generate_test_patients(num_patients):
     return patient_list
 
 
-# Testing code
+# Testing code via database
 #db = Database()
 #db.connect(ADMINUSER, ADMINPASS)
-#generate_report(db.search_patient_by_name())  # Saving sample patient data to pdf report
-generate_report(_generate_test_patients(15), 3)  # Saving sample patient data to pdf report
+#generate_report(db.search_patient_by_name(), 3)  # Saving sample patient data to pdf report
+
+# Testing code locally w/o database
+# generate_report(_generate_test_patients(15), 3)  # Saving sample patient data to pdf report
