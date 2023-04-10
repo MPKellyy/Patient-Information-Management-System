@@ -32,13 +32,16 @@ class Database:
         query = "INSERT INTO " + self.patient_table + "(" + fields + ') VALUES (' + values + ');'
         self.cursor.execute(query)
 
-    def commit_changes(self):
-        verification = input("Are you sure you would like to commit changes to database? (y/n) ")
-        if verification.lower() == 'y':
-            print("Changes committed. ")
+    def commit_changes(self, override=False):
+        if override:
             self.connection.commit()
         else:
-            print("Changes discarded. ")
+            verification = input("Are you sure you would like to commit changes to database? (y/n) ")
+            if verification.lower() == 'y':
+                print("Changes committed. ")
+                self.connection.commit()
+            else:
+                print("Changes discarded. ")
 
     def connect(self, USER, PASSWORD):
         self.connection = pymysql.connect(host=HOST, user=USER, port=PORT,

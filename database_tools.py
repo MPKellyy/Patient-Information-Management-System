@@ -26,28 +26,45 @@ def create_account(username, password, tier=0, test=False):
         tier = 0
 
     # Creating account
-    poggers.execute("CREATE USER '" + str(username) + "' IDENTIFIED BY '" + str(password) + "';")
-    poggers.commitChanges()
+    db.execute("CREATE USER '" + str(username) + "' IDENTIFIED BY '" + str(password) + "';")
+    db.commit_changes(override=True)
 
     # Setting account permissions
     # TODO: Limit some columns to INSERT/SELECT/UPDATE only
-    if tier == 0:
-        # TODO: Need to add columns for room_number, restricted visitors, and allowed visitors
-        set_account_permission(username, tables[0], ['firstname', 'lastname'], ["SELECT"])
-    elif tier == 1:
+    if tier == 1:
+        # Accounting
         set_account_permission(username, tables[0], ['firstname', 'lastname', 'address', 'marital_status',
                                                      'employment_status', 'employer', 'insurance_provider',
                                                      'insurance_contact', 'invoice', 'patient_amount_paid',
                                                      'insurance_amount_paid', 'pay_plan', 'pay_history',
                                                      'phone_number', 'insurance_account_num', 'charge_history'],
                                                     ["SELECT", "UPDATE"])
-    else:
+    elif tier == 2:
+        # Nurse
+        set_account_permission(username, tables[1], ['firstname', 'lastname', 'room_number', 'sex', 'age', 'height',
+                                                     'weight', 'race', 'dob', 'care_provider', 'current_status',
+                                                     'medical_risks', 'allowed_visitors', 'restricted_visitors',
+                                                     'admission_date', 'admission_reason', 'discharge_date',
+                                                     'emergency_contacts', 'medical_history', 'photo',
+                                                     'phone_number', 'nurse_notes'], ["SELECT", "UPDATE"])
+        set_account_permission(username, tables[1], ['doctor_notes'], ["SELECT"])
+        # TODO: Make doctors notes, prescriptions, and procedures read only
+    elif tier == 3:
+        # Doctor
         set_account_permission(username, tables[1], ['firstname', 'lastname', 'room_number', 'sex', 'age', 'height',
                                                      'weight', 'race', 'dob', 'care_provider', 'current_status',
                                                      'medical_risks', 'allowed_visitors', 'restricted_visitors',
                                                      'admission_date', 'admission_reason', 'discharge_date',
                                                      'emergency_contacts', 'family_doctor', 'medical_history', 'photo',
-                                                     'phone_number', 'ssn'], ["SELECT", "UPDATE", "INSERT"])
+                                                     'phone_number', 'ssn', 'doctor_notes'], ["SELECT", "UPDATE", "INSERT"])
+        set_account_permission(username, tables[1], ['nurse_notes'], ["SELECT"])
+        # TODO: Make nurses notes read only
+    else:
+        # Volunteer
+        set_account_permission(username, tables[0], ['firstname', 'lastname'], ["SELECT"])
+        set_account_permission(username, tables[1], ['photo'], ["SELECT"])
+        # TODO: Allow/restricted visitors?
+        # set_account_permission(username, tables[1], ['allowed_visitors', 'restricted_visitors'], ["SELECT"])
 
 
 """
@@ -56,8 +73,8 @@ Inputs:
 username - account username, string
 """
 def delete_account(username):
-    poggers.execute("DROP USER " + str(username) + ";")
-    poggers.commitChanges()
+    db.execute("DROP USER " + str(username) + ";")
+    db.commit_changes(override=True)
 
 
 """
@@ -67,7 +84,7 @@ show_permissions - optional, if set to True, shows all permissions for that acco
 """
 def display_accounts(show_permissions=False):
     # Getting all accounts
-    accounts = poggers.select("user", "mysql.user")
+    accounts = db.select("user", "mysql.user")
 
     # We don't want to display these
     virtual_databases = ["mysql.infoschema", "mysql.session", "mysql.sys"]
@@ -122,8 +139,8 @@ def set_account_permission(username, table_name, col_names, permissions):
     query = query[:-2]
     query += ") ON " + str(table_name) + " TO " + str(username) + ";"
 
-    poggers.execute(query)
-    poggers.commitChanges()
+    db.execute(query)
+    db.commit_changes(override=True)
 
 
 """
@@ -133,7 +150,7 @@ username - account username, string
 """
 def show_account_permissions(username):
     # Acquiring permissions
-    permissions = poggers.execute("SHOW GRANTS FOR " + username + ";")
+    permissions = db.execute("SHOW GRANTS FOR " + username + ";")
 
     # Printing returned permissions
     for permission in permissions:
@@ -162,8 +179,8 @@ def create_table(table_name, col_dict={"col1": "INT"}):
     query += ");"
 
     # Executing query
-    poggers.execute(query)
-    poggers.commitChanges()
+    db.execute(query)
+    db.commit_changes(override=True)
 
 
 """
@@ -172,15 +189,15 @@ Inputs:
 table_name - name of table to delete, string
 """
 def delete_table(table_name):
-    poggers.execute("DROP TABLE " + str(table_name) + ";")
-    poggers.commitChanges()
+    db.execute("DROP TABLE " + str(table_name) + ";")
+    db.commit_changes(override=True)
 
 
 """
 Displays all tables in database
 """
 def display_tables():
-    print(poggers.execute("SHOW TABLES"))
+    print(db.execute("SHOW TABLES"))
     print("")
 
 
@@ -272,7 +289,9 @@ def account_creation_test_on_dummy_tables():
         "medical_history": "VARCHAR(2000)",
         "photo": "BLOB",
         "phone_number": "VARCHAR(20)",
-        "ssn": "VARCHAR(20)"
+        "ssn": "VARCHAR(20)",
+        "doctor_notes": "VARCHAR(2000)",
+        "nurse_notes": "VARCHAR(2000)"
     })
 
     # Account creation
@@ -282,14 +301,16 @@ def account_creation_test_on_dummy_tables():
     print("\n***After account creation***")
     create_account("volunteer_test", 123, 0, test=True)
     create_account("office_test", 123, 1, test=True)
-    create_account("medical_test", 123, 2, test=True)
+    create_account("nurse_test", 123, 2, test=True)
+    create_account("doctor_test", 123, 3, test=True)
     display_accounts(show_permissions=True)
 
     # Account and table deletion (NOTE: only deleting dummy tables here. NEVER delete our actual tables.)
     print("\n***After account deletion***")
     delete_account("volunteer_test")
     delete_account("office_test")
-    delete_account("medical_test")
+    delete_account("nurse_test")
+    delete_account("doctor_test")
     display_accounts()
     delete_table("patient_accounting_test")
     delete_table("patient_medical_test")
@@ -307,13 +328,15 @@ def account_creation_test_on_actual_tables():
     print("\n***After account creation***")
     create_account("volunteer_test", 123, 0)
     create_account("office_test", 123, 1)
-    create_account("medical_test", 123, 2)
+    create_account("nurse_test", 123, 2)
+    create_account("doctor_test", 123, 3)
     display_accounts(show_permissions=True)
 
     print("\n***After account deletion***")
     delete_account("volunteer_test")
     delete_account("office_test")
-    delete_account("medical_test")
+    delete_account("nurse_test")
+    delete_account("doctor_test")
     display_accounts()
 
 
@@ -334,11 +357,13 @@ def reset(username, table_name):
         pass
 
 
-user = input("enter username:")
-passw = input("enter password:")
-poggers = Database()
-poggers.connect(user,passw)
+# user = input("enter username:")
+# passw = input("enter password:")
+db = Database()
+db.connect(ADMINUSER, ADMINPASS)
+# db.connect(user,passw)
 # account_creation_test_on_dummy_tables()
 # account_creation_test_on_actual_tables()
 # table_creation_test()
 # display_accounts_test()
+
