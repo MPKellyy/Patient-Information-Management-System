@@ -4,18 +4,25 @@ from fpdf import FPDF
 from patient import *
 from database import *
 from tkinter import filedialog
+from database_tools import create_account, delete_account, reset
 
 
-# Function used to get patient data from database
-# Returns a list of strings containing patient information based on user tier
-# Inputs: an Account class
-# TODO: Determine if a patients parameter is needed
-def _format_data(patient, tier):
+"""
+Function used to get patient data from database
+Returns a list of strings containing patient information based on user role
+Inputs: an Account class
+TODO: Determine if a patients parameter is needed
+"""
+def _format_data(patient, role):
     # Header of report
     report = ["Date of access: " + str(datetime.date.today()),
               "Time of access: " + datetime.datetime.now().strftime("%H:%M:%S"), "\n"]
 
-    if tier == 1:
+    # photo = patient.photo
+    # report.append("Photo: " + str(photo))
+
+    # TODO: Implement office staff once accounting role is set in database
+    if role == 1 and False:
         # Office staff
         name = patient.firstname + " " + patient.lastname
         report.append("Patient name: " + name)
@@ -40,15 +47,14 @@ def _format_data(patient, tier):
 
         # charges = {"Surgery fee": 1000.00, "Service fee": 250.00, "Misc": 250.00}
         # report.append("Charges: " + _dict_to_string(charges, " $"))
-    elif tier == 2 or tier == 3:
+    elif role == "nurse" or role == "doctor":
         # Nurse and Doctor can see same information in report
+        if role == "doctor":
+            ssn = patient.ssn
+            report.append("SSN: " + str(ssn))
 
         name = patient.firstname + " " + patient.lastname
         report.append("Patient name: " + str(name))
-
-        if tier == 3:
-            ssn = patient.ssn
-            report.append("SSN: " + str(ssn))
 
         dob = patient.dob
         report.append("Date of birth: " + str(dob))
@@ -67,9 +73,6 @@ def _format_data(patient, tier):
 
         weight = patient.weight
         report.append("Weight: " + str(weight))
-
-        # photo = patient.photo
-        # report.append("Photo: " + str(photo))
 
         report.append("\n")
 
@@ -107,7 +110,7 @@ def _format_data(patient, tier):
         emergency_contacts = patient.emergency_contacts
         report.append("Emergency contacts: " + str(emergency_contacts))
 
-        if tier == 3:
+        if role == "doctor":
             family_doctor = patient.family_doctor
             report.append("Family doctor: " + family_doctor)
 
@@ -137,9 +140,6 @@ def _format_data(patient, tier):
         room_number = patient.room_number
         report.append("Room number: " + str(room_number))
 
-        # photo = patient.photo
-        # report.append("Photo: " + str(photo))
-
         # TODO: Allowed and Restricted visitor access?
         # allowed_visitors = patient.allowed_visitors
         # report.append("Allowed visitors: " + str(allowed_visitors))
@@ -152,14 +152,20 @@ def _format_data(patient, tier):
     return report
 
 
-# Function used to save patient information as a pdf report
-# Information on report depends on tier
-# # NOTE: Does NOT return anything, only exports pdf
-# TODO: Integrate database support, and support for report on multiple patients
-def generate_report(patients, tier):
+"""
+Function used to save patient information as a pdf report
+Information on report depends on role
+NOTE: Does NOT return anything, only exports pdf
+TODO: Integrate database support, and support for report on multiple patients
+"""
+def generate_report(patients, role_query):
     # Test code
     filepath = ""
     try:
+        roles = ["volunteer", "nurse", "doctor"]
+        role = role_query[0][0].split("@")[0]
+        role = role[1:len(role) - 1]
+        assert role in roles
         filepath = filedialog.askdirectory()
         assert len(filepath) != 0
     except:
@@ -170,7 +176,7 @@ def generate_report(patients, tier):
 
     for patient in patients:
         report_pdf.add_page()
-        report = _format_data(patient, tier)
+        report = _format_data(patient, role)
         report_pdf.set_font("Arial", size=11)
         for line in report:  # (inner loop)
             print(line)
@@ -179,9 +185,11 @@ def generate_report(patients, tier):
     report_pdf.output(filepath + "/patient_report.pdf")
 
 
-# Helper function that adds contents of dictionary to report in bullet pointed format
-# Inputs: header for bullet pointed section, input dictionary, list to append to
-# NOTE: Does NOT return anything, it will ADD TO the input list (report_list)
+"""
+Helper function that adds contents of dictionary to report in bullet pointed format
+Inputs: header for bullet pointed section, input dictionary, list to append to
+NOTE: Does NOT return anything, it will ADD TO the input list (report_list)
+"""
 def _add_dict_as_bullets(subheader, input_dict, report_list):
     report_list.append(subheader)
     for key in input_dict:
@@ -190,11 +198,13 @@ def _add_dict_as_bullets(subheader, input_dict, report_list):
             report_list.append("                * " + note)
 
 
-# Helper function that converts dictionary to a string
-# All key/value pairs are separated by commas
-# Programmer can set the delimiter/symbol that separates each key and value (comma by default)
-# Inputs: a dictionary to convert, an optional string of desired delimiter
-# Returns: string of dictionary
+"""
+Helper function that converts dictionary to a string
+All key/value pairs are separated by commas
+Programmer can set the delimiter/symbol that separates each key and value (comma by default)
+Inputs: a dictionary to convert, an optional string of desired delimiter
+Returns: string of dictionary
+"""
 def _dict_to_string(input_dict, delimiter=" - "):
     dict_str = ""
     for key in input_dict:
@@ -205,7 +215,10 @@ def _dict_to_string(input_dict, delimiter=" - "):
     return dict_str
 
 
-# Helper function to generate list Patients (for testing purposes)
+"""
+Helper function to generate list Patients (for testing purposes)
+Inputs: number of patient to generate
+"""
 def _generate_test_patients(num_patients):
     patient_list = []
 
@@ -218,10 +231,64 @@ def _generate_test_patients(num_patients):
     return patient_list
 
 
-# Testing code via database
-#db = Database()
-#db.connect(ADMINUSER, ADMINPASS)
-#generate_report(db.search_patient_by_name(), 3)  # Saving sample patient data to pdf report
+"""
+Test case for generating report for specified account
+Inputs: username of test account, password of test account, role of account, optional number of patients to report on
+"""
+def _report_test(username, password, role, num_patients=1):
+    # Handling user mis-input
+    username = str(username)
+    password = str(password)
+    role = str(role)
 
-# Testing code locally w/o database
-# generate_report(_generate_test_patients(15), 3)  # Saving sample patient data to pdf report
+    if not isinstance(num_patients, int):
+        num_patients = 1
+
+    # Ensuring no duplicate account exists
+    reset(username)
+
+    # Establishing connection to database based on role
+    create_account(username, password, role)
+    test_db = Database()
+    test_db.connect(username, password)
+
+    # Generating report
+    generate_report(_generate_test_patients(num_patients), test_db.execute("SELECT CURRENT_ROLE();"))
+
+    delete_account(username)
+
+
+"""
+Test case for generating volunteer report
+"""
+def _volunteer_report_test(num_patients=1):
+    _report_test("volunteer_test", "volunteer_test", "volunteer", num_patients)
+
+
+"""
+Test case for generating nurse report
+"""
+def _nurse_report_test(num_patients=1):
+    _report_test("nurse_test", "nurse_test", "nurse", num_patients)
+
+
+"""
+Test case for generating doctor report
+"""
+def _doctor_report_test(num_patients=1):
+    _report_test("doctor_test", "doctor_test", "doctor", num_patients)
+
+
+"""
+Test case for invalid role passed into generate_report
+"""
+def _report_invalid_role_test():
+    db = Database()
+    db.connect(ADMINUSER, ADMINPASS)
+    generate_report(_generate_test_patients(5), "not_a_valid_role")
+
+
+# _report_invalid_role_test()
+# _volunteer_report_test()
+# _nurse_report_test()
+# _doctor_report_test()

@@ -1,5 +1,8 @@
 from database import *
 
+# Connecting to database
+db = Database()
+db.connect(ADMINUSER, ADMINPASS)
 
 """
 Used to create account
@@ -9,62 +12,23 @@ password - account password, string
 tier - account tier, int
 test - optional: True if using test tables (must be labeled patient_medical_test and patient_accounting_test), bool
 """
-def create_account(username, password, tier=0, test=False):
-    # Name of tables accounts can have access to
-    tables = ["patient_accounting", "patient_medical"]
-
-    # If testing, append "_test" with the assumptions made above
-    if test:
-        for i in range(0, len(tables)):
-            tables[i] += "_test"
-
+def create_account(username, password, role):
     # Ensuring user input for tier is valid
-    tiers = [0, 1, 2, 3]
+    roles = ["volunteer", "nurse", "doctor"]
 
-    if tier not in tiers:
+    if role not in roles:
         # Defaults to volunteer status
-        tier = 0
+        role = "volunteer"
 
     # Creating account
     db.execute("CREATE USER '" + str(username) + "' IDENTIFIED BY '" + str(password) + "';")
     db.commit_changes(override=True)
-
-    # Setting account permissions
-    # TODO: Limit some columns to INSERT/SELECT/UPDATE only
-    if tier == 1:
-        # Accounting
-        set_account_permission(username, tables[0], ['firstname', 'lastname', 'address', 'marital_status',
-                                                     'employment_status', 'employer', 'insurance_provider',
-                                                     'insurance_contact', 'invoice', 'patient_amount_paid',
-                                                     'insurance_amount_paid', 'pay_plan', 'pay_history',
-                                                     'phone_number', 'insurance_account_num', 'charge_history'],
-                                                    ["SELECT", "UPDATE"])
-    elif tier == 2:
-        # Nurse
-        set_account_permission(username, tables[1], ['firstname', 'lastname', 'room_number', 'sex', 'age', 'height',
-                                                     'weight', 'race', 'dob', 'care_provider', 'current_status',
-                                                     'medical_risks', 'allowed_visitors', 'restricted_visitors',
-                                                     'admission_date', 'admission_reason', 'discharge_date',
-                                                     'emergency_contacts', 'medical_history', 'photo',
-                                                     'phone_number', 'nurse_notes'], ["SELECT", "UPDATE"])
-        set_account_permission(username, tables[1], ['doctor_notes'], ["SELECT"])
-        # TODO: Make doctors notes, prescriptions, and procedures read only
-    elif tier == 3:
-        # Doctor
-        set_account_permission(username, tables[1], ['firstname', 'lastname', 'room_number', 'sex', 'age', 'height',
-                                                     'weight', 'race', 'dob', 'care_provider', 'current_status',
-                                                     'medical_risks', 'allowed_visitors', 'restricted_visitors',
-                                                     'admission_date', 'admission_reason', 'discharge_date',
-                                                     'emergency_contacts', 'family_doctor', 'medical_history', 'photo',
-                                                     'phone_number', 'ssn', 'doctor_notes'], ["SELECT", "UPDATE", "INSERT"])
-        set_account_permission(username, tables[1], ['nurse_notes'], ["SELECT"])
-        # TODO: Make nurses notes read only
-    else:
-        # Volunteer
-        set_account_permission(username, tables[0], ['firstname', 'lastname'], ["SELECT"])
-        set_account_permission(username, tables[1], ['photo'], ["SELECT"])
-        # TODO: Allow/restricted visitors?
-        # set_account_permission(username, tables[1], ['allowed_visitors', 'restricted_visitors'], ["SELECT"])
+    grant_query = "GRANT '" + role + "' TO '" + username + "'@'%';"
+    role_query = "SET DEFAULT ROLE '" + role + "' TO '" + username + "'@'%';"
+    db.execute(grant_query)
+    db.commit_changes(override=True)
+    db.execute(role_query)
+    db.commit_changes(override=True)
 
 
 """
@@ -197,7 +161,12 @@ def delete_table(table_name):
 Displays all tables in database
 """
 def display_tables():
-    print(db.execute("SHOW TABLES"))
+    tables = db.execute("SHOW TABLES")
+
+    for i in range(0, len(tables)):
+        name = tables[i][0]
+        print(name)
+
     print("")
 
 
@@ -229,94 +198,6 @@ def display_accounts_test():
 
 
 """
-Test case of account creation on dummy tables
-"""
-def account_creation_test_on_dummy_tables():
-    # These are the accounts created with their respective tier tables
-    account_table = {
-        "volunteer_test": "patient_accounting_test",
-        "office_test": "patient_accounting_test",
-        "medical_test": "patient_medical_test"
-    }
-
-    # If left over dummy tables/accounts are present, delete them
-    for account in account_table.keys():
-        try:
-            reset(account, account_table[account])
-        except:
-            pass
-
-    # Creating dummy tables
-    create_table("patient_accounting_test", {
-        "firstname": "VARCHAR(255)",
-        "lastname": "VARCHAR(255)",
-        "address": "VARCHAR(255)",
-        "marital_status": "VARCHAR(255)",
-        "employment_status": "VARCHAR(50)",
-        "employer": "VARCHAR(50)",
-        "insurance_provider": "VARCHAR(50)",
-        "insurance_contact": "VARCHAR(500)",
-        "invoice": "INT",
-        "patient_amount_paid": "INT",
-        "insurance_amount_paid": "INT",
-        "pay_plan": "VARCHAR(255)",
-        "pay_history": "VARCHAR(500)",
-        "phone_number": "VARCHAR(20)",
-        "insurance_account_num": "VARCHAR(50)",
-        "charge_history": "VARCHAR(500)"
-    })
-
-    create_table("patient_medical_test", {
-        "firstname": "VARCHAR(255)",
-        "lastname": "VARCHAR(255)",
-        "room_number": "INT",
-        "sex": "VARCHAR(255)",
-        "age": "INT",
-        "height": "VARCHAR(255)",
-        "weight": "VARCHAR(50)",
-        "race": "VARCHAR(50)",
-        "dob": "DATE",
-        "care_provider": "VARCHAR(50)",
-        "current_status": "VARCHAR(50)",
-        "medical_risks": "VARCHAR(500)",
-        "allowed_visitors": "VARCHAR(500)",
-        "restricted_visitors": "VARCHAR(500)",
-        "admission_date": "DATE",
-        "admission_reason": "VARCHAR(255)",
-        "discharge_date": "DATE",
-        "emergency_contacts": "VARCHAR(500)",
-        "family_doctor": "VARCHAR(255)",
-        "medical_history": "VARCHAR(2000)",
-        "photo": "BLOB",
-        "phone_number": "VARCHAR(20)",
-        "ssn": "VARCHAR(20)",
-        "doctor_notes": "VARCHAR(2000)",
-        "nurse_notes": "VARCHAR(2000)"
-    })
-
-    # Account creation
-    print("***Before account creation***")
-    display_accounts()
-
-    print("\n***After account creation***")
-    create_account("volunteer_test", 123, 0, test=True)
-    create_account("office_test", 123, 1, test=True)
-    create_account("nurse_test", 123, 2, test=True)
-    create_account("doctor_test", 123, 3, test=True)
-    display_accounts(show_permissions=True)
-
-    # Account and table deletion (NOTE: only deleting dummy tables here. NEVER delete our actual tables.)
-    print("\n***After account deletion***")
-    delete_account("volunteer_test")
-    delete_account("office_test")
-    delete_account("nurse_test")
-    delete_account("doctor_test")
-    display_accounts()
-    delete_table("patient_accounting_test")
-    delete_table("patient_medical_test")
-
-
-"""
 Test case for creating every account tier on our current tables
 """
 def account_creation_test_on_actual_tables():
@@ -345,25 +226,13 @@ Helper functions used for resetting tests if something fails
 Deletes user
 TODO: DO NOT use this for any test labeled (actual_tables)
 """
-def reset(username, table_name):
+def reset(username):
     try:
         delete_account(username)
     except:
         pass
 
-    try:
-        delete_table(table_name)
-    except:
-        pass
 
-
-# user = input("enter username:")
-# passw = input("enter password:")
-db = Database()
-db.connect(ADMINUSER, ADMINPASS)
-# db.connect(user,passw)
-# account_creation_test_on_dummy_tables()
-# account_creation_test_on_actual_tables()
-# table_creation_test()
 # display_accounts_test()
-
+# table_creation_test()
+# account_creation_test_on_actual_tables()
