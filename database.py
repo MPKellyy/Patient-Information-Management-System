@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import pandas as pd
 import pymysql
+import pymysql.cursors
 import cryptography
 from consts import *
 from patient import Patient
@@ -91,6 +92,13 @@ class Database:
         self.cursor.execute(query)
         return self.cursor.fetchall()
 
+    def dict_execute(self, query):
+        self.cursor = self.connection.cursor(pymysql.cursors.DictCursor)
+        self.cursor.execute(query)
+        output = self.cursor.fetchall()
+        self.cursor = self.connection.cursor(pymysql.cursors.Cursor)
+        return output
+
     def save_patient_data(self, patient):
         # TODO: keep track of values that have been changed and only update those
         for key in patient.changes:
@@ -168,7 +176,9 @@ class Database:
 # passw = input("enter password:")
 # db = Database()
 # db.connect(user, passw)
-# db.search_patient_by_name("john doe")
+# test = db.dict_execute("SELECT * FROM patient_medical")
+# for i in test:
+#     print(i['firstname'])
 # db.select('*', 'Accounts')
 # db.select_all('Accounts')
 
