@@ -12,7 +12,8 @@ class Database:
     def __init__(self):
         self.connection = None
         self.cursor = None
-        self.patient_table = 'patient_medical'
+        self.role = None
+        self.patient_table = None
 
     # PUBLIC METHODS
     def add_patient(self, patient=None):
@@ -47,6 +48,9 @@ class Database:
         self.connection = pymysql.connect(host=HOST, user=USER, port=PORT,
                                           passwd=PASSWORD, db=DATABASE)
         self.cursor = self.connection.cursor()
+        self.get_user_role()
+
+
 
     def create_random_patient(self):
         # any Patient object with no input parameters will be filled with random data
@@ -74,6 +78,14 @@ class Database:
 
     def get_columns(self, table):
         return self.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='" + table + "'")
+
+    def get_user_role(self):
+        role = self.execute("SELECT CURRENT_ROLE();")
+        role = role[0][0]
+        role = role.split("@")
+        role = role[0].replace("`", "")
+        self.role = role
+        self.patient_table = "patient_"+self.role
 
     def execute(self, query):
         self.cursor.execute(query)
@@ -128,6 +140,7 @@ class Database:
             output = "Table Does not exist"
         except pymysql.err.OperationalError:
             output = "Access denied"
+        print(format(output))  # prints output to console
         return output
 
     def close(self):
@@ -153,8 +166,9 @@ class Database:
 
 # user = input("enter username:")
 # passw = input("enter password:")
-# db = Database(user, passw)
-# db.execute("ALTER TABLE Accounts ALTER COLUMN Password SET INVISIBLE;")
+# db = Database()
+# db.connect(user, passw)
+# db.search_patient_by_name("john doe")
 # db.select('*', 'Accounts')
 # db.select_all('Accounts')
 
