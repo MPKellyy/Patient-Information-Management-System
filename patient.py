@@ -248,6 +248,18 @@ class Patient:
         self.data['nurse_notes'] = new
         self.changes.append('nurse_notes')
 
+    def set_address(self, new):
+        # do nothing because idk what all to do to add elements
+        print(1)
+    def set_bed_number(self, new):
+        # do nothing because idk what all to do to add elements
+        print(1)
+    def set_prescriptions(self, new):
+        # do nothing because idk what all to do to add elements
+        print(1)
+    def set_procedures(self, new):
+        # do nothing because idk what all to do to add elements
+        print(1)
     # private methods
 
     def _parse_database_input(self):

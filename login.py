@@ -3,10 +3,11 @@ from tkinter import *
 from tkinter import ttk
 
 import pymysql.err
-
 import database
+import report_exporter
 
 db = database.Database()
+
 
 def run_gui():
     root = Tk()
@@ -14,93 +15,136 @@ def run_gui():
     root.geometry("1280x720")
 
     # expanded patient info page
-    def open_patient_info():
-        patient_frame = ttk.Frame(root, width=1260, height=700, padding=10, borderwidth=5, relief='solid')
+    def open_patient_info(patient):
+        global db
+        role = db.execute("SELECT CURRENT_ROLE();")
+        role = role[0][0].split("@")[0]
+        tier = 0
+        if role == "`volunteer`":
+            tier = 0
+        elif role == "`nurse`":
+            tier = 2
+        elif role == "`doctor`":
+            tier = 3
+
+        patient_frame = ttk.Frame(root, width=1260, height=580, padding=10, borderwidth=5, relief='solid')
         patient_frame.pack(pady=10)
         patient_frame.grid_propagate(False)
 
         # set up grid
         patient_frame.columnconfigure(1, weight=1)
-        patient_frame.columnconfigure(2, weight=2)
-        patient_frame.columnconfigure(3, weight=1)
-        patient_frame.columnconfigure(4, weight=2)
-        for i in range(1, 20):
+        patient_frame.columnconfigure(2, weight=1)
+        for i in range(1, 22):
             patient_frame.rowconfigure(i, weight=1)
+        i = 1
 
         # tier 0 data
-        patient_patient_name_label = ttk.Label(patient_frame, text="Patient Name:", font=('Arial', 16))
-        patient_patient_name_label.grid(row=1, column=1, sticky='nw')
+        if tier >= 0:
+            patient_patient_name_label = ttk.Label(patient_frame, text="Patient Name: " + patient.get_full_name(), font=('Arial', 15))
+            patient_patient_name_label.grid(row=i, column=1, sticky='nw')
 
-        patient_building_label = ttk.Label(patient_frame, text="Building Location:", font=('Arial', 16))
-        patient_building_label.grid(row=2, column=1, sticky='nw')
+            patient_building_label = ttk.Label(patient_frame, text="Building Location: " + "Placeholder", font=('Arial', 15))
+            patient_building_label.grid(row=i+1, column=1, sticky='nw')
 
-        patient_room_number_label = ttk.Label(patient_frame, text="Room Number:", font=('Arial', 16))
-        patient_room_number_label.grid(row=3, column=1, sticky='nw')
+            patient_room_number_label = ttk.Label(patient_frame, text="Room Number: " + patient.room_number, font=('Arial', 15))
+            patient_room_number_label.grid(row=i+2, column=1, sticky='nw')
 
-        patient_bed_number_label = ttk.Label(patient_frame, text="Bed Number:", font=('Arial', 16))
-        patient_bed_number_label.grid(row=4, column=1, sticky='nw')
+            patient_bed_number_label = ttk.Label(patient_frame, text="Bed Number: " + "Placeholder", font=('Arial', 15))
+            patient_bed_number_label.grid(row=i+3, column=1, sticky='nw')
 
-        patient_restricted_visitors_label = ttk.Label(patient_frame, text="Restricted Visitors:", font=('Arial', 16))
-        patient_restricted_visitors_label.grid(row=5, column=1, sticky='nw')
+            patient_restricted_visitors_label = ttk.Label(patient_frame, text="Restricted Visitors: " + patient.restricted_visitors, font=('Arial', 15))
+            patient_restricted_visitors_label.grid(row=i+4, column=1, sticky='nw')
 
-        patient_allowed_visitors_label = ttk.Label(patient_frame, text="Allowed Visitors:", font=('Arial', 16))
-        patient_allowed_visitors_label.grid(row=6, column=1, sticky='nw')
+            patient_allowed_visitors_label = ttk.Label(patient_frame, text="Allowed Visitors: " + patient.allowed_visitors, font=('Arial', 15))
+            patient_allowed_visitors_label.grid(row=i+5, column=1, sticky='nw')
+
+            i += 6
 
         # tier 1 data TODO: only show if account tier >=1
-        patient_admission_reason_label = ttk.Label(patient_frame, text="Admission Reason:", font=('Arial', 16))
-        patient_admission_reason_label.grid(row=7, column=1, sticky='nw')
+        if tier >= 1:
+            patient_admission_reason_label = ttk.Label(patient_frame, text="Admission Reason: " + patient.admission_reason, font=('Arial', 15))
+            patient_admission_reason_label.grid(row=i, column=1, sticky='nw')
 
-        patient_admission_date_label = ttk.Label(patient_frame, text="Admission Date:", font=('Arial', 16))
-        patient_admission_date_label.grid(row=8, column=1, sticky='nw')
+            patient_admission_date_label = ttk.Label(patient_frame, text="Admission Date: " + patient.admission_date, font=('Arial', 15))
+            patient_admission_date_label.grid(row=i+1, column=1, sticky='nw')
 
-        patient_discharge_date_label = ttk.Label(patient_frame, text="Discharge Date:", font=('Arial', 16))
-        patient_discharge_date_label.grid(row=9, column=1, sticky='nw')
+            patient_discharge_date_label = ttk.Label(patient_frame, text="Discharge Date: " + patient.discharge_date, font=('Arial', 15))
+            patient_discharge_date_label.grid(row=i+2, column=1, sticky='nw')
 
-        patient_mailing_address_label = ttk.Label(patient_frame, text="Mailing Address:", font=('Arial', 16))
-        patient_mailing_address_label.grid(row=10, column=1, sticky='nw')
+            patient_mailing_address_label = ttk.Label(patient_frame, text="Mailing Address: " + "Placeholder", font=('Arial', 15))
+            patient_mailing_address_label.grid(row=i+3, column=1, sticky='nw')
 
-        patient_phone_number_label = ttk.Label(patient_frame, text="Phone Number:", font=('Arial', 16))
-        patient_phone_number_label.grid(row=11, column=1, sticky='nw')
+            patient_phone_number_label = ttk.Label(patient_frame, text="Phone Number: " + patient.phone_number, font=('Arial', 15))
+            patient_phone_number_label.grid(row=i+4, column=1, sticky='nw')
 
-        patient_emergency_contacts_label = ttk.Label(patient_frame, text="Emergency Contacts:", font=('Arial', 16))
-        patient_emergency_contacts_label.grid(row=12, column=1, sticky='nw')
+            patient_emergency_contacts_label = ttk.Label(patient_frame, text="Emergency Contacts: " + patient.emergency_contacts, font=('Arial', 15))
+            patient_emergency_contacts_label.grid(row=i+5, column=1, sticky='nw')
 
-        patient_family_doctor_label = ttk.Label(patient_frame, text="Family Doctor:", font=('Arial', 16))
-        patient_family_doctor_label.grid(row=13, column=1, sticky='nw')
+            patient_family_doctor_label = ttk.Label(patient_frame, text="Family Doctor: " + patient.care_provider, font=('Arial', 15))
+            patient_family_doctor_label.grid(row=i+6, column=1, sticky='nw')
 
-        patient_insurance_carrier_label = ttk.Label(patient_frame, text="Insurance Carrier:", font=('Arial', 16))
-        patient_insurance_carrier_label.grid(row=14, column=1, sticky='nw')
+            patient_insurance_carrier_label = ttk.Label(patient_frame, text="Insurance Carrier: " + "Placeholder", font=('Arial', 15))
+            patient_insurance_carrier_label.grid(row=i+7, column=1, sticky='nw')
 
-        patient_insurance_account_number_label = ttk.Label(patient_frame, text="Insurance Account Number:", font=('Arial', 16))
-        patient_insurance_account_number_label.grid(row=15, column=1, sticky='nw')
+            patient_insurance_account_number_label = ttk.Label(patient_frame, text="Insurance Account Number: " + "Placeholder", font=('Arial', 15))
+            patient_insurance_account_number_label.grid(row=i+8, column=1, sticky='nw')
 
-        patient_insurance_group_number_label = ttk.Label(patient_frame, text="Insurance Group Number:", font=('Arial', 16))
-        patient_insurance_group_number_label.grid(row=16, column=1, sticky='nw')
+            patient_insurance_group_number_label = ttk.Label(patient_frame, text="Insurance Group Number: " + "Placeholder", font=('Arial', 15))
+            patient_insurance_group_number_label.grid(row=i+9, column=1, sticky='nw')
 
-        patient_insurance_amount_paid_label = ttk.Label(patient_frame, text="Insurance Amount Paid:", font=('Arial', 16))
-        patient_insurance_amount_paid_label.grid(row=17, column=1, sticky='nw')
+            patient_insurance_amount_paid_label = ttk.Label(patient_frame, text="Insurance Amount Paid: " + "Placeholder", font=('Arial', 15))
+            patient_insurance_amount_paid_label.grid(row=i+10, column=1, sticky='nw')
 
-        patient_patient_amount_paid_label = ttk.Label(patient_frame, text="Patient Amount Paid:", font=('Arial', 16))
-        patient_patient_amount_paid_label.grid(row=18, column=1, sticky='nw')
+            patient_patient_amount_paid_label = ttk.Label(patient_frame, text="Patient Amount Paid: " + "Placeholder", font=('Arial', 15))
+            patient_patient_amount_paid_label.grid(row=i+11, column=1, sticky='nw')
 
-        patient_patient_amount_owed_label = ttk.Label(patient_frame, text="Patient Amount Owed:", font=('Arial', 16))
-        patient_patient_amount_owed_label.grid(row=19, column=1, sticky='nw')
+            patient_patient_amount_owed_label = ttk.Label(patient_frame, text="Patient Amount Owed: " + "Placeholder", font=('Arial', 15))
+            patient_patient_amount_owed_label.grid(row=i+12, column=1, sticky='nw')
 
-        patient_history_of_charges_label = ttk.Label(patient_frame, text="History of Charges:", font=('Arial', 16))
-        patient_history_of_charges_label.grid(row=20, column=1, sticky='nw')
+            patient_history_of_charges_label = ttk.Label(patient_frame, text="History of Charges: " + "Placeholder", font=('Arial', 15))
+            patient_history_of_charges_label.grid(row=i+13, column=1, sticky='nw')
+
+            i += 14
 
         # tier 2/3 data TODO: only show if account tier >=2 (and make only doctors able to edit doctor notes, same for nurses)
-        patient_list_of_prescriptions_label = ttk.Label(patient_frame, text="List of Prescriptions:", font=('Arial', 16))
-        patient_list_of_prescriptions_label.grid(row=1, column=3, sticky='nw')
+        if tier >= 2:
+            patient_list_of_prescriptions_label = ttk.Label(patient_frame, text="List of Prescriptions: " + "Placeholder", font=('Arial', 15))
+            patient_list_of_prescriptions_label.grid(row=1, column=2, sticky='nw')
 
-        patient_list_of_procedures_label = ttk.Label(patient_frame, text="List of Procedures:", font=('Arial', 16))
-        patient_list_of_procedures_label.grid(row=2, column=3, sticky='nw')
+            patient_list_of_procedures_label = ttk.Label(patient_frame, text="List of Procedures: " + "Placeholder", font=('Arial', 15))
+            patient_list_of_procedures_label.grid(row=5, column=2, sticky='nw')
 
-        patient_doctors_notes_label = ttk.Label(patient_frame, text="Doctor's Notes:", font=('Arial', 16))
-        patient_doctors_notes_label.grid(row=3, column=3, sticky='nw')
+            patient_doctors_notes_label = ttk.Label(patient_frame, text="Doctor's Notes: " + "Placeholder", font=('Arial', 15))
+            patient_doctors_notes_label.grid(row=9, column=2, sticky='nw')
 
-        patient_nurses_notes_label = ttk.Label(patient_frame, text="Nurse's Notes:", font=('Arial', 16))
-        patient_nurses_notes_label.grid(row=12, column=3, sticky='nw')
+            patient_nurses_notes_label = ttk.Label(patient_frame, text="Nurse's Notes: " + "Placeholder", font=('Arial', 15))
+            patient_nurses_notes_label.grid(row=15, column=2, sticky='nw')
+
+        buttons_frame = ttk.Frame(root, width=1260, height=110, borderwidth=5, relief='solid')
+        buttons_frame.pack()
+        buttons_frame.pack_propagate(False)
+
+        def logout():
+            global db
+            db.close()
+            patient_frame.destroy()
+            buttons_frame.destroy()
+            open_login()
+        logout_button = ttk.Button(buttons_frame, text="Log Out", command=logout)
+        logout_button.pack(anchor='w')
+
+        def back():
+            patient_frame.destroy()
+            buttons_frame.destroy()
+            open_landing()
+        back_button = ttk.Button(buttons_frame, text="Back", command=back)
+        back_button.pack(anchor='w')
+
+        def export():
+            print(db.execute("SELECT CURRENT_ROLE();"))
+            report_exporter.generate_report([patient], db.execute("SELECT CURRENT_ROLE();"))
+        export_button = ttk.Button(buttons_frame, text="Export Report", command=export)
+        export_button.pack(anchor='e')
 
     # landing page, has search bar, results window, various buttons at the bottom
     def open_landing():
@@ -125,9 +169,7 @@ def run_gui():
         full_name_radio.pack(anchor='nw')
 
         # search button by the name entry bar
-
         def search_button_function():
-            # todo: make this query db for what's in name_entry
             # destroy existing results
             for x in results_canvas_frame.winfo_children():
                 x.destroy()
@@ -139,7 +181,6 @@ def run_gui():
                 search_for_patients(lastname=name_entry.get())
             elif result == 3:
                 search_for_patients(name=name_entry.get())
-
         search_button = ttk.Button(search_frame, text="Search", command=search_button_function)
         search_button.place(x=310, y=8)
 
@@ -162,9 +203,9 @@ def run_gui():
                 patient_dob_label.grid(column=2, row=1, sticky='w')
                 patient_phone_label = ttk.Label(frame, text=patient.phone_number)
                 patient_phone_label.grid(column=3, row=1, sticky='w')
-                patient_address_label = ttk.Label(frame, text="123 Placeholder Street")
+                patient_address_label = ttk.Label(frame, text="Placeholder")
                 patient_address_label.grid(column=4, row=1, sticky='w')
-                frame.bind('<Double-Button-1>', patient_select)
+                frame.bind('<Double-Button-1>', lambda p=patient: patient_select(patient))
                 result_list.append(frame)
 
         # right frame, for displaying results
@@ -201,12 +242,24 @@ def run_gui():
         logout_button = ttk.Button(buttons_frame, text='Log Out', command=log_out)
         logout_button.pack(anchor='w', side=LEFT, padx=20)
 
+        # button for exporting reports on all patients
+        def export_all_patients():
+            try:
+                list_of_patients = db.get_all_patients()
+            except:
+                print("error in getting all patients")
+            else:
+                report_exporter.generate_report(list_of_patients, db.execute("SELECT CURRENT_ROLE();"))
+
+        export_button = ttk.Button(buttons_frame, text="Export All Patients", command=export_all_patients)
+        export_button.pack(anchor='w')
+
         def patient_select(e):
-            print('click')
+            print('select')
             search_frame.destroy()
             results_frame.destroy()
             buttons_frame.destroy()
-            open_patient_info()
+            open_patient_info(e)
 
 
 
@@ -247,13 +300,14 @@ def run_gui():
                 error_label.place(x=600, y=200)
                 print("hi")
             except:
+                error_label = ttk.Label(login_frame, text="Error: Please try again", font=("Arial", 15))
+                error_label.place(x=600, y=200)
                 print("poggers")
             else:
                 # on successful login, destroy login frame and call function to open landing page
                 login_frame.destroy()
                 root.after(0, open_landing())
-
-        button = ttk.Button(login_frame, text="Log In", command=login)
-        button.place(x=625, y=370)
+        login_button = ttk.Button(login_frame, text="Log In", command=login)
+        login_button.place(x=625, y=370)
         root.mainloop()
     open_login()
