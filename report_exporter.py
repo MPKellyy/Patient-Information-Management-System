@@ -1,4 +1,3 @@
-from account import *
 import datetime
 from fpdf import FPDF
 from patient import *
