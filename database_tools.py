@@ -170,69 +170,12 @@ def display_tables():
     print("")
 
 
-"""
-Test case for table creation
-"""
-def table_creation_test():
-    print("***Before table creation***")
-    display_tables()
-
-    print("***After table creation***")
-    create_table("test_table", {"col1": "INT", "col2": "INT"})
-    display_tables()
-
-    print("***After table deletion***")
-    delete_table("test_table")
-    display_tables()
-
-
-"""
-Test case for displaying all accounts in database
-"""
-def display_accounts_test():
-    print("***Displaying accounts without permissions flag***")
-    display_accounts()
-
-    print("***Displaying accounts with permissions flag set***")
-    display_accounts(show_permissions=True)
-
-
-"""
-Test case for creating every account tier on our current tables
-"""
-def account_creation_test_on_actual_tables():
-    # TODO: If this test fails, DO NOT DROP THESE TABLES. You need to delete the test accounts before rerunning.
-
-    print("***Before account creation***")
-    display_accounts()
-
-    print("\n***After account creation***")
-    create_account("volunteer_test", 123, 0)
-    create_account("office_test", 123, 1)
-    create_account("nurse_test", 123, 2)
-    create_account("doctor_test", 123, 3)
-    display_accounts(show_permissions=True)
-
-    print("\n***After account deletion***")
-    delete_account("volunteer_test")
-    delete_account("office_test")
-    delete_account("nurse_test")
-    delete_account("doctor_test")
-    display_accounts()
-
-
-"""
-Helper functions used for resetting tests if something fails
-Deletes user
-TODO: DO NOT use this for any test labeled (actual_tables)
-"""
 def reset(username):
+    """
+    Helper function used for deleting duplicate user if a test case fails
+    """
+
     try:
         delete_account(username)
     except:
         pass
-
-
-# display_accounts_test()
-# table_creation_test()
-# account_creation_test_on_actual_tables()

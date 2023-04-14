@@ -219,7 +219,7 @@ def _dict_to_string(input_dict, delimiter=" - "):
 Helper function to generate list Patients (for testing purposes)
 Inputs: number of patient to generate
 """
-def _generate_test_patients(num_patients):
+def generate_test_patients(num_patients):
     patient_list = []
 
     if not isinstance(num_patients, int) or num_patients < 1:
@@ -229,66 +229,3 @@ def _generate_test_patients(num_patients):
         patient_list.append(Patient(i))
 
     return patient_list
-
-
-"""
-Test case for generating report for specified account
-Inputs: username of test account, password of test account, role of account, optional number of patients to report on
-"""
-def _report_test(username, password, role, num_patients=1):
-    # Handling user mis-input
-    username = str(username)
-    password = str(password)
-    role = str(role)
-
-    if not isinstance(num_patients, int):
-        num_patients = 1
-
-    # Ensuring no duplicate account exists
-    reset(username)
-
-    # Establishing connection to database based on role
-    create_account(username, password, role)
-    test_db = Database()
-    test_db.connect(username, password)
-
-    # Generating report
-    generate_report(_generate_test_patients(num_patients), test_db.execute("SELECT CURRENT_ROLE();"))
-
-    delete_account(username)
-
-
-"""
-Test case for generating volunteer report
-"""
-def _volunteer_report_test(num_patients=1):
-    _report_test("volunteer_test", "volunteer_test", "volunteer", num_patients)
-
-
-"""
-Test case for generating nurse report
-"""
-def _nurse_report_test(num_patients=1):
-    _report_test("nurse_test", "nurse_test", "nurse", num_patients)
-
-
-"""
-Test case for generating doctor report
-"""
-def _doctor_report_test(num_patients=1):
-    _report_test("doctor_test", "doctor_test", "doctor", num_patients)
-
-
-"""
-Test case for invalid role passed into generate_report
-"""
-def _report_invalid_role_test():
-    db = Database()
-    db.connect(ADMINUSER, ADMINPASS)
-    generate_report(_generate_test_patients(5), "not_a_valid_role")
-
-
-# _report_invalid_role_test()
-# _volunteer_report_test()
-# _nurse_report_test()
-# _doctor_report_test()
