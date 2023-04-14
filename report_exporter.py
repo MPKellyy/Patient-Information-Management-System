@@ -4,16 +4,21 @@ from fpdf import FPDF
 from patient import *
 from database import *
 from tkinter import filedialog
-from database_tools import create_account, delete_account, reset
 
 
-"""
-Function used to get patient data from database
-Returns a list of strings containing patient information based on user role
-Inputs: an Account class
-TODO: Determine if a patients parameter is needed
-"""
 def _format_data(patient, role):
+    """
+    Function used to get patient data from database
+
+    Returns a list of strings containing patient information based on user role
+
+    Inputs:
+
+    patient - A patient object
+
+    role - database role of account querying for data
+    """
+
     # Header of report
     report = ["Date of access: " + str(datetime.date.today()),
               "Time of access: " + datetime.datetime.now().strftime("%H:%M:%S"), "\n"]
@@ -152,15 +157,15 @@ def _format_data(patient, role):
     return report
 
 
-"""
-Function used to save patient information as a pdf report
-Information on report depends on role
-NOTE: Does NOT return anything, only exports pdf
-TODO: Integrate database support, and support for report on multiple patients
-"""
 def generate_report(patients, role_query):
-    # Test code
-    filepath = ""
+    """
+    Function used to save patient information as a pdf report
+
+    Information on report depends on role
+
+    NOTE: Does NOT return anything, only exports pdf
+    """
+
     try:
         roles = ["volunteer", "nurse", "doctor"]
         role = role_query[0][0].split("@")[0]
@@ -185,12 +190,21 @@ def generate_report(patients, role_query):
     report_pdf.output(filepath + "/patient_report.pdf")
 
 
-"""
-Helper function that adds contents of dictionary to report in bullet pointed format
-Inputs: header for bullet pointed section, input dictionary, list to append to
-NOTE: Does NOT return anything, it will ADD TO the input list (report_list)
-"""
 def _add_dict_as_bullets(subheader, input_dict, report_list):
+    """
+    Helper function that adds contents of dictionary to report in bullet pointed format
+
+    NOTE: Does NOT return anything, it will ADD TO the input list (report_list)
+
+    Inputs:
+
+    subheader - header for bullet pointed section
+
+    input_dict - input dictionary
+
+    report_list - list to append to
+    """
+
     report_list.append(subheader)
     for key in input_dict:
         report_list.append("        " + key + ":")
@@ -198,14 +212,23 @@ def _add_dict_as_bullets(subheader, input_dict, report_list):
             report_list.append("                * " + note)
 
 
-"""
-Helper function that converts dictionary to a string
-All key/value pairs are separated by commas
-Programmer can set the delimiter/symbol that separates each key and value (comma by default)
-Inputs: a dictionary to convert, an optional string of desired delimiter
-Returns: string of dictionary
-"""
 def _dict_to_string(input_dict, delimiter=" - "):
+    """
+    Helper function that converts dictionary to a string
+
+    All key/value pairs are separated by commas
+
+    Programmer can set the delimiter/symbol that separates each key and value (comma by default)
+
+    Inputs:
+
+    input_dict - a dictionary to convert
+
+    delimiter - an optional string of desired delimiter
+
+    Returns: string of dictionary
+    """
+
     dict_str = ""
     for key in input_dict:
         dict_str += key + delimiter + str(input_dict[key]) + ", "
@@ -215,11 +238,15 @@ def _dict_to_string(input_dict, delimiter=" - "):
     return dict_str
 
 
-"""
-Helper function to generate list Patients (for testing purposes)
-Inputs: number of patient to generate
-"""
 def generate_test_patients(num_patients):
+    """
+    Helper function to generate list Patients (for testing purposes)
+
+    Inputs:
+
+    num_patients - number of patient to generate
+    """
+
     patient_list = []
 
     if not isinstance(num_patients, int) or num_patients < 1:
