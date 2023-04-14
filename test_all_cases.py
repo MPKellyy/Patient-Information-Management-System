@@ -1,6 +1,7 @@
 from test_database import *
 from test_database_tools import *
 from test_report_exporter import *
+from test_util import *
 
 '''
 HEADER:
