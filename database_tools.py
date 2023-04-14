@@ -4,15 +4,22 @@ from database import *
 db = Database()
 db.connect(ADMINUSER, ADMINPASS)
 
-"""
-Used to create account
-Inputs:
-username - account username, string
-password - account password, string
-tier - account tier, int
-test - optional: True if using test tables (must be labeled patient_medical_test and patient_accounting_test), bool
-"""
+
 def create_account(username, password, role):
+    """
+    Used to create account
+
+    Inputs:
+
+    username - account username, string
+
+    password - account password, string
+
+    tier - account tier, int
+
+    test - optional: True if using test tables (must be labeled patient_medical_test and patient_accounting_test), bool
+    """
+
     # Ensuring user input for tier is valid
     roles = ["volunteer", "nurse", "doctor"]
 
@@ -31,22 +38,28 @@ def create_account(username, password, role):
     db.commit_changes(override=True)
 
 
-"""
-Deletes account in database
-Inputs:
-username - account username, string
-"""
 def delete_account(username):
+    """
+    Deletes account in database
+
+    Inputs:
+
+    username - account username, string
+    """
+
     db.execute("DROP USER " + str(username) + ";")
     db.commit_changes(override=True)
 
 
-"""
-Lists all accounts in database
-Inputs:
-show_permissions - optional, if set to True, shows all permissions for that account, bool
-"""
 def display_accounts(show_permissions=False):
+    """
+    Lists all accounts in database
+
+    Inputs:
+
+    show_permissions - optional, if set to True, shows all permissions for that account, bool
+    """
+
     # Getting all accounts
     accounts = db.select("user", "mysql.user")
 
@@ -76,15 +89,21 @@ def display_accounts(show_permissions=False):
         print("")
 
 
-"""
-Sets an accounts table permissions (used in account creation function)
-Inputs:
-username - account username, string
-table_name - name of table to set permissions for, string
-col_names - string-list of column names to set permissions for (assuming they exist!)
-permissions - string-list of permissions you want to set for user (must be valid permission settings!)
-"""
 def set_account_permission(username, table_name, col_names, permissions):
+    """
+    Sets an accounts table permissions (used in account creation function)
+
+    Inputs:
+
+    username - account username, string
+
+    table_name - name of table to set permissions for, string
+
+    col_names - string-list of column names to set permissions for (assuming they exist!)
+
+    permissions - string-list of permissions you want to set for user (must be valid permission settings!)
+    """
+
     # Constructing query
     query = "GRANT "
 
@@ -107,12 +126,15 @@ def set_account_permission(username, table_name, col_names, permissions):
     db.commit_changes(override=True)
 
 
-"""
-Shows an accounts table permissions
-Input:
-username - account username, string
-"""
 def show_account_permissions(username):
+    """
+    Shows an accounts table permissions
+
+    Input:
+
+    username - account username, string
+    """
+
     # Acquiring permissions
     permissions = db.execute("SHOW GRANTS FOR " + username + ";")
 
@@ -121,13 +143,17 @@ def show_account_permissions(username):
         print(permission[0])
 
 
-"""
-Creates table in database
-Inputs:
-table_name - name of table to create, string
-col_dict - a dictionary where each key is the string of a column name and value is a SQL value as a string
-"""
 def create_table(table_name, col_dict={"col1": "INT"}):
+    """
+    Creates table in database
+
+    Inputs:
+
+    table_name - name of table to create, string
+
+    col_dict - a dictionary where each key is the string of a column name and value is a SQL value as a string
+    """
+
     # Must have at least one table entry, return if len 0 provided
     if len(col_dict) == 0:
         print("Aborting table creation, must have at least one dictionary entry")
@@ -147,20 +173,24 @@ def create_table(table_name, col_dict={"col1": "INT"}):
     db.commit_changes(override=True)
 
 
-"""
-Used to delete table from database
-Inputs:
-table_name - name of table to delete, string
-"""
 def delete_table(table_name):
+    """
+    Used to delete table from database
+
+    Inputs:
+
+    table_name - name of table to delete, string
+    """
+
     db.execute("DROP TABLE " + str(table_name) + ";")
     db.commit_changes(override=True)
 
 
-"""
-Displays all tables in database
-"""
 def display_tables():
+    """
+    Displays all tables in database
+    """
+
     tables = db.execute("SHOW TABLES")
 
     for i in range(0, len(tables)):
@@ -170,69 +200,16 @@ def display_tables():
     print("")
 
 
-"""
-Test case for table creation
-"""
-def table_creation_test():
-    print("***Before table creation***")
-    display_tables()
-
-    print("***After table creation***")
-    create_table("test_table", {"col1": "INT", "col2": "INT"})
-    display_tables()
-
-    print("***After table deletion***")
-    delete_table("test_table")
-    display_tables()
-
-
-"""
-Test case for displaying all accounts in database
-"""
-def display_accounts_test():
-    print("***Displaying accounts without permissions flag***")
-    display_accounts()
-
-    print("***Displaying accounts with permissions flag set***")
-    display_accounts(show_permissions=True)
-
-
-"""
-Test case for creating every account tier on our current tables
-"""
-def account_creation_test_on_actual_tables():
-    # TODO: If this test fails, DO NOT DROP THESE TABLES. You need to delete the test accounts before rerunning.
-
-    print("***Before account creation***")
-    display_accounts()
-
-    print("\n***After account creation***")
-    create_account("volunteer_test", 123, 0)
-    create_account("office_test", 123, 1)
-    create_account("nurse_test", 123, 2)
-    create_account("doctor_test", 123, 3)
-    display_accounts(show_permissions=True)
-
-    print("\n***After account deletion***")
-    delete_account("volunteer_test")
-    delete_account("office_test")
-    delete_account("nurse_test")
-    delete_account("doctor_test")
-    display_accounts()
-
-
-"""
-Helper functions used for resetting tests if something fails
-Deletes user
-TODO: DO NOT use this for any test labeled (actual_tables)
-"""
 def reset(username):
+    """
+    Helper function used for deleting duplicate user if a test case fails
+
+    Inputs:
+
+    Account username as string
+    """
+
     try:
         delete_account(username)
     except:
         pass
-
-
-# display_accounts_test()
-# table_creation_test()
-# account_creation_test_on_actual_tables()
