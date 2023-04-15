@@ -170,7 +170,9 @@ def generate_report(patients, role_query):
         role = role_query[0][0].split("@")[0]
         role = role[1:len(role) - 1]
         assert role in roles
-        filepath = filedialog.askdirectory()
+        filepath = filedialog.asksaveasfilename(defaultextension=".pdf", filetypes=[("PDF Files", "*.pdf")])
+        if not filepath.endswith(".pdf"):
+            filepath += ".pdf"
         assert len(filepath) != 0
     except:
         print("Save report aborted")
@@ -186,7 +188,7 @@ def generate_report(patients, role_query):
             print(line)
             report_pdf.cell(200, 5, txt=line, ln=1)
 
-    report_pdf.output(filepath + "/patient_report.pdf")
+    report_pdf.output(filepath)
 
 
 def _add_dict_as_bullets(subheader, input_dict, report_list):
