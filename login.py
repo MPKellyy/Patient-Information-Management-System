@@ -34,33 +34,52 @@ def run_gui():
         # set up grid
         patient_frame.columnconfigure(1, weight=1)
         patient_frame.columnconfigure(2, weight=1)
+        patient_frame.columnconfigure(3, weight=4)
         for i in range(1, 22):
             patient_frame.rowconfigure(i, weight=1)
         i = 1
 
         # tier 0 data
         if tier >= 0:
-            patient_patient_name_label = ttk.Label(patient_frame, text="Patient Name: " + patient.get_full_name(), font=('Arial', 15))
-            patient_patient_name_label.grid(row=i, column=1, sticky='nw')
+            # Patient Name
+            patient_name_label = ttk.Label(patient_frame, text="Patient Name: ", font=('Arial', 15))
+            patient_name_label.grid(row=i, column=1, sticky='nw')
+            patient_name_data = ttk.Label(patient_frame, text=patient.get_full_name(), font=('Arial', 15))
+            patient_name_data.grid(row=i, column=2, sticky='nw')
 
-            patient_building_label = ttk.Label(patient_frame, text="Building Location: " + "Placeholder", font=('Arial', 15))
+            # Building
+            patient_building_label = ttk.Label(patient_frame, text="Building Location: ", font=('Arial', 15))
             patient_building_label.grid(row=i+1, column=1, sticky='nw')
+            patient_building_data = ttk.Label(patient_frame, text="Placeholder", font=('Arial', 15))
+            patient_building_data.grid(row=i+1, column=2, sticky='nw')
 
-            patient_room_number_label = ttk.Label(patient_frame, text="Room Number: " + patient.room_number, font=('Arial', 15))
+            # Room Number
+            patient_room_number_label = ttk.Label(patient_frame, text="Room Number: ", font=('Arial', 15))
             patient_room_number_label.grid(row=i+2, column=1, sticky='nw')
+            patient_room_number_data = ttk.Label(patient_frame, text=patient.room_number, font=('Arial', 15))
+            patient_room_number_data.grid(row=i+2, column=2, sticky='nw')
 
-            patient_bed_number_label = ttk.Label(patient_frame, text="Bed Number: " + "Placeholder", font=('Arial', 15))
+            # Bed Number
+            patient_bed_number_label = ttk.Label(patient_frame, text="Bed Number: ", font=('Arial', 15))
             patient_bed_number_label.grid(row=i+3, column=1, sticky='nw')
+            patient_bed_number_data = ttk.Label(patient_frame, text="Placeholder", font=('Arial', 15))
+            patient_bed_number_data.grid(row=i+3, column=2, sticky='nw')
 
-            patient_restricted_visitors_label = ttk.Label(patient_frame, text="Restricted Visitors: " + patient.restricted_visitors, font=('Arial', 15))
+            # Restricted Visitors
+            patient_restricted_visitors_label = ttk.Label(patient_frame, text="Restricted Visitors: ", font=('Arial', 15))
             patient_restricted_visitors_label.grid(row=i+4, column=1, sticky='nw')
+            patient_restricted_visitors_data = ttk.Label(patient_frame, text=patient.restricted_visitors, font=('Arial', 15))
+            patient_restricted_visitors_data.grid(row=i+4, column=2, sticky='nw')
 
-            patient_allowed_visitors_label = ttk.Label(patient_frame, text="Allowed Visitors: " + patient.allowed_visitors, font=('Arial', 15))
+            # Allowed Visitors
+            patient_allowed_visitors_label = ttk.Label(patient_frame, text="Allowed Visitors: ", font=('Arial', 15))
             patient_allowed_visitors_label.grid(row=i+5, column=1, sticky='nw')
+            patient_allowed_visitors_data = ttk.Label(patient_frame, text=patient.allowed_visitors, font=('Arial', 15))
+            patient_allowed_visitors_data.grid(row=i+5, column=2, sticky='nw')
 
             i += 6
 
-        # tier 1 data TODO: only show if account tier >=1
+        # tier 1 data
         if tier >= 1:
             patient_admission_reason_label = ttk.Label(patient_frame, text="Admission Reason: " + patient.admission_reason, font=('Arial', 15))
             patient_admission_reason_label.grid(row=i, column=1, sticky='nw')
@@ -106,19 +125,19 @@ def run_gui():
 
             i += 14
 
-        # tier 2/3 data TODO: only show if account tier >=2 (and make only doctors able to edit doctor notes, same for nurses)
+        # tier 2/3 data
         if tier >= 2:
             patient_list_of_prescriptions_label = ttk.Label(patient_frame, text="List of Prescriptions: " + "Placeholder", font=('Arial', 15))
-            patient_list_of_prescriptions_label.grid(row=1, column=2, sticky='nw')
+            patient_list_of_prescriptions_label.grid(row=1, column=3, sticky='nw')
 
             patient_list_of_procedures_label = ttk.Label(patient_frame, text="List of Procedures: " + "Placeholder", font=('Arial', 15))
-            patient_list_of_procedures_label.grid(row=5, column=2, sticky='nw')
+            patient_list_of_procedures_label.grid(row=5, column=3, sticky='nw')
 
             patient_doctors_notes_label = ttk.Label(patient_frame, text="Doctor's Notes: " + "Placeholder", font=('Arial', 15))
-            patient_doctors_notes_label.grid(row=9, column=2, sticky='nw')
+            patient_doctors_notes_label.grid(row=9, column=3, sticky='nw')
 
             patient_nurses_notes_label = ttk.Label(patient_frame, text="Nurse's Notes: " + "Placeholder", font=('Arial', 15))
-            patient_nurses_notes_label.grid(row=15, column=2, sticky='nw')
+            patient_nurses_notes_label.grid(row=15, column=3, sticky='nw')
 
         buttons_frame = ttk.Frame(root, width=1260, height=110, borderwidth=5, relief='solid')
         buttons_frame.pack()
@@ -145,6 +164,53 @@ def run_gui():
             report_exporter.generate_report([patient], db.execute("SELECT CURRENT_ROLE();"))
         export_button = ttk.Button(buttons_frame, text="Export Report", command=export)
         export_button.pack(anchor='e')
+
+        edit_or_save = True
+        patient_name_edit = ttk.Entry(patient_frame)
+        patient_building_edit = ttk.Entry(patient_frame)
+        def edit_button_function():
+            nonlocal edit_or_save
+            nonlocal patient_name_data
+            if edit_or_save:
+                # Patient Name
+                patient_name_edit.insert(0, patient.get_full_name())
+                patient_name_edit.grid(row=1, column=2, sticky='nw')
+
+                # Building
+                patient_building_edit.insert(0, "Placeholder")
+                patient_building_edit.grid(row=2, column=2, sticky='nw')
+
+                # and so on
+
+
+                edit_button.config(text="Save Changes")
+                edit_or_save = False
+            else:
+                # Patient Name
+                patient_new_name = patient_name_edit.get().split(maxsplit=1)
+                patient.set_firstname(patient_new_name[0])
+                patient.set_lastname(patient_new_name[1])
+                patient_name_data.config(text=patient.get_full_name())
+                # patient_name_data.grid(row=1, column=2, sticky='nw')
+                patient_name_edit.destroy()
+
+                # Building
+                patient_new_building = patient_building_edit.get()
+                # patient.set_building(patient_new_building)
+                patient_building_data.config(text=patient_new_building)
+                # patient_building_data.grid(row=2, column=2, sticky='nw')
+                patient_building_edit.destroy()
+
+                # can config instead of creating new object
+                # don't need grid if we're not destroying it or creating new one
+
+
+                edit_button.config(text="Edit Info")
+                edit_or_save = True
+        edit_button = ttk.Button(buttons_frame, text="Edit Info", command=edit_button_function)
+        edit_button.pack(anchor='w')
+        # TODO: implement permissions, rest of data
+        # create edit above function, display and insert edit in if, use lines 1,4,5,6 of else
 
     # landing page, has search bar, results window, various buttons at the bottom
     def open_landing():
@@ -238,7 +304,6 @@ def run_gui():
             results_frame.destroy()
             buttons_frame.destroy()
             open_login()
-            # todo: also delete account info
         logout_button = ttk.Button(buttons_frame, text='Log Out', command=log_out)
         logout_button.pack(anchor='w', side=LEFT, padx=20)
 
