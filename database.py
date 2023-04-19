@@ -14,8 +14,13 @@ class Database:
 
 
     def execute(self, query):
-        self.cursor.execute(query)
-        output = self.cursor.fetchall()
+        try:
+            self.cursor.execute(query)
+            output = self.cursor.fetchall()
+        except pymysql.err.ProgrammingError:
+            output = "Programming bug found"
+        except pymysql.err.OperationalError:
+            output = "Operational error thrown"
         print(format(output))
         return output
 
@@ -23,8 +28,14 @@ class Database:
         self.connection.commit()
 
     def select(self, arg1, arg2):
-        self.cursor.execute("SELECT " + arg1 + " FROM " + arg2 + ";")  # execute query
-        output = self.cursor.fetchall()  # puts output into a string
+        try:
+            self.cursor.execute("SELECT " + arg1 + " FROM " + arg2 + ";")  # execute query
+            output = self.cursor.fetchall()  # puts output into a string
+        except pymysql.err.ProgrammingError:
+            output = "Programming bug found"
+        except pymysql.err.OperationalError:
+            output = "Operational error thrown"
+
         print(format(output))  # prints output to console
         return output
 
