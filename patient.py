@@ -1,7 +1,8 @@
 import names
 import random
 import numpy as np
-from consts import PATIENT_RACES, ADMISSION_REASONS
+from consts import PATIENT_RACES, ADMISSION_REASONS, HUNTSVILLE_ZIP_CODES, MARITAL_STATUSES, \
+    EMPLOYMENT_STATUSES, INSURANCE_PROVIDERS
 import datetime
 from util import calculate_current_age, literal
 
@@ -15,20 +16,26 @@ class Patient:
         3. Create a patient using completely randomly-generated data. (WORKING!)
     """
 
-    def __init__(self, patientID, firstname=None, lastname=None, room_number=None, sex=None, age=None,
-                 height=None, weight=None, race=None, dob=None, care_provider=None, current_status=None,
-                 medical_risks=None, allowed_visitors=None, restricted_visitors=None, admission_date=None,
-                 admission_reason=None, discharge_date=None, emergency_contacts=None, family_doctor=None,
-                 medical_history=None, photo=None, phone_number=None, ssn=None, doctor_notes=None,
-                 nurse_notes=None, data=None):
+    def __init__(self, patientID, firstname=None, lastname=None, room_number=None, bed_number=None,
+                 sex=None, age=None, height=None, weight=None, race=None, dob=None, care_provider=None,
+                 current_status=None, medical_risks=None, allowed_visitors=None, restricted_visitors=None,
+                 admission_date=None, admission_reason=None, discharge_date=None, emergency_contacts=None,
+                 family_doctor=None, medical_history=None, photo=None, phone_number=None, ssn=None,
+                 doctor_notes=None, nurse_notes=None, address=None, prescriptions=None, procedures=None,
+                 marital_status=None, employment_status=None, employer=None, insurance_provider=None,
+                 insurance_contact=None, invoice=None, patient_amount_paid=None, insurance_amount_paid=None,
+                 pay_plan=None, pay_history=None, insurance_account_num=None, charge_history=None, data=None):
 
         if not data:
             data = {}
         self.data = data
+
+        # patient_medical attributes
         self.patientID = patientID
         self.firstname = firstname
         self.lastname = lastname
         self.room_number = room_number
+        self.bed_number = bed_number
         self.sex = sex
         self.age = age
         self.height = height
@@ -51,6 +58,26 @@ class Patient:
         self.ssn = ssn
         self.doctor_notes = doctor_notes
         self.nurse_notes = nurse_notes
+        self.address = address
+        self.prescriptions = prescriptions
+        self.procedures = procedures
+
+        # patient_accounting attributes
+        self.marital_status = marital_status
+        self.employment_status = employment_status
+        self.employer = employer
+        self.insurance_provider = insurance_provider
+        self.insurance_contact = insurance_contact
+        self.invoice = invoice
+        self.patient_amount_paid = patient_amount_paid
+        self.insurance_amount_paid = insurance_amount_paid
+        self.pay_plan = pay_plan
+        self.pay_history = pay_history
+        self.insurance_account_num = insurance_account_num
+        self.charge_history = charge_history
+        self.data = data
+
+        # keep track of edits
         self.changes = []
 
         # other attributes that are not part of general patient data
@@ -98,6 +125,19 @@ class Patient:
         self._set_random_family_doctor()
         self._set_random_phone_number()
         self._set_random_ssn()
+        self._set_random_address()
+        self._set_random_marital_status()
+        self._set_random_employment_status()
+        self._set_random_employer()
+        self._set_random_insurance_provider()
+        self._set_random_insurance_contact()
+        self._set_random_invoice()
+        self._set_random_patient_amount_paid()
+        self._set_random_insurance_amount_paid()
+        self._set_random_pay_plan()
+        self._set_random_pay_history()
+        self._set_random_insurance_account_num()
+        self._set_random_charge_history()
 
         # add all data to dict
         self._refresh_dict()
@@ -115,6 +155,59 @@ class Patient:
             return self.firstname + " " + self.lastname
         else:
             return 'Unknown'
+
+    def get_patient_medical_data(self):
+        return {'patientID': self.patientID,
+                'firstname': self.firstname,
+                'lastname': self.lastname,
+                'room_number': self.room_number,
+                'bed_number': self.bed_number,
+                'sex': self.sex,
+                'age': self.age,
+                'height': self.height,
+                'weight': self.weight,
+                'race': self.race,
+                'dob': self.dob,
+                'care_provider': self.care_provider,
+                'current_status': self.current_status,
+                'medical_risks': self.medical_risks,
+                'allowed_visitors': self.allowed_visitors,
+                'restricted_visitors': self.restricted_visitors,
+                'admission_date': self.admission_date,
+                'admission_reason': self.admission_reason,
+                'discharge_date': self.discharge_date,
+                'emergency_contacts': self.emergency_contacts,
+                'family_doctor': self.family_doctor,
+                'medical_history': self.medical_history,
+                'photo': self.photo,
+                'phone_number': self.phone_number,
+                'ssn': self.ssn,
+                'doctor_notes': self.doctor_notes,
+                'nurse_notes': self.nurse_notes,
+                'address': self.address,
+                'prescriptions': self.prescriptions,
+                'procedures': self.procedures,
+                }
+
+    def get_patient_accounting_data(self):
+        return {'accountingID': self.patientID,
+                'firstname': self.firstname,
+                'lastname': self.lastname,
+                'address': self.address,
+                'marital_status': self.marital_status,
+                'employment_status': self.employment_status,
+                'employer': self.employer,
+                'insurance_provider': self.insurance_provider,
+                'insurance_contact': self.insurance_contact,
+                'invoice': self.invoice,
+                'patient_amount_paid': self.patient_amount_paid,
+                'insurance_amount_paid': self.insurance_amount_paid,
+                'pay_plan': self.pay_plan,
+                'pay_history': self.pay_history,
+                'phone_number': self.phone_number,
+                'insurance_account_num': self.insurance_account_num,
+                'charge_history': self.charge_history,
+                }
 
     # setters........ so many of them
 
@@ -137,6 +230,11 @@ class Patient:
         self.room_number = new
         self.data['room_number'] = new
         self.changes.append('room_number')
+
+    def set_bed_number(self, new):
+        self.bed_number = new
+        self.data['bed_number'] = new
+        self.changes.append('bed_number')
 
     def set_sex(self, new):
         self.sex = new
@@ -249,18 +347,81 @@ class Patient:
         self.changes.append('nurse_notes')
 
     def set_address(self, new):
-        # do nothing because idk what all to do to add elements
-        print(1)
-    def set_bed_number(self, new):
-        # do nothing because idk what all to do to add elements
-        print(1)
+        self.address = new
+        self.data['address'] = new
+        self.changes.append('address')
+
     def set_prescriptions(self, new):
-        # do nothing because idk what all to do to add elements
-        print(1)
+        self.prescriptions = new
+        self.data['prescriptions'] = new
+        self.changes.append('prescriptions')
+
     def set_procedures(self, new):
-        # do nothing because idk what all to do to add elements
-        print(1)
-    # private methods
+        self.procedures = new
+        self.data['procedures'] = new
+        self.changes.append('procedures')
+
+    def set_marital_status(self, new):
+        self.marital_status = new
+        self.data['marital_status'] = new
+        self.changes.append('marital_status')
+
+    def set_employment_status(self, new):
+        self.employment_status = new
+        self.data['employment_status'] = new
+        self.changes.append('employment_status')
+
+    def set_employer(self, new):
+        self.employer = new
+        self.data['employer'] = new
+        self.changes.append('employer')
+
+    def set_insurance_provider(self, new):
+        self.insurance_provider = new
+        self.data['insurance_provider'] = new
+        self.changes.append('insurance_provider')
+
+    def set_insurance_contact(self, new):
+        self.insurance_contact = new
+        self.data['insurance_contact'] = new
+        self.changes.append('insurance_contact')
+
+    def set_invoice(self, new):
+        self.invoice = new
+        self.data['invoice'] = new
+        self.changes.append('invoice')
+
+    def set_patient_amount_paid(self, new):
+        self.patient_amount_paid = new
+        self.data['patient_amount_paid'] = new
+        self.changes.append('patient_amount_paid')
+
+    def set_insurance_amount_paid(self, new):
+        self.insurance_amount_paid = new
+        self.data['insurance_amount_paid'] = new
+        self.changes.append('insurance_amount_paid')
+
+    def set_pay_plan(self, new):
+        self.pay_plan = new
+        self.data['pay_plan'] = new
+        self.changes.append('pay_plan')
+
+    def set_pay_history(self, new):
+        self.pay_history = new
+        self.data['pay_history'] = new
+        self.changes.append('pay_history')
+
+    def set_insurance_account_num(self, new):
+        self.insurance_account_num = new
+        self.data['insurance_account_num'] = new
+        self.changes.append('insurance_account_num')
+
+    def set_charge_history(self, new):
+        self.charge_history = new
+        self.data['charge_history'] = new
+        self.changes.append('charge_history')
+
+        # private methods
 
     def _parse_database_input(self):
         # TODO: complete this function
@@ -283,6 +444,9 @@ class Patient:
 
     def _set_random_room_number(self):
         self.set_room_number(random.randint(1, 50))
+
+    def _set_random_bed_number(self):
+        self.set_room_number(random.randint(1, 250))
 
     def _set_random_age(self):
         # setting a random age changes the date of birth automatically
@@ -406,11 +570,8 @@ class Patient:
 
     def _set_random_phone_number(self):
         phone_number = ''
-        for i in range(0, 12):
-            if i == 3 or i == 7:
-                phone_number += '-'
-            else:
-                phone_number += str(random.randint(0, 9))
+        for i in range(0, 10):
+            phone_number += str(random.randint(0, 9))
 
         self.set_phone_number(phone_number)
 
@@ -424,6 +585,89 @@ class Patient:
 
         self.set_ssn(ssn)
 
+    def _set_random_address(self):
+        # random 5 numbers + random last name + 'st' or 'dr'
+        # huntsville, al + 35###
+        address = ''
+
+        # generate 5 random numbers
+        for i in range(0, 5):
+            address += str(random.randint(0, 9))
+
+        # some random last name (hopefully street name sounding)
+        address += ' ' + names.get_last_name()
+
+        # choose 'st' or 'dr'
+        address += random.choice([' St ', ' Dr '])
+
+        # huntsville al
+        address += 'Huntsville, AL '
+
+        # zipcode
+        address += random.choice(HUNTSVILLE_ZIP_CODES)
+
+        self.set_address(address)
+
+    def _set_random_marital_status(self):
+        # we'll assume minors are not married
+        if self.age < 18:
+            marital_status = 'Unmarried'
+        else:
+            marital_status = random.choice(MARITAL_STATUSES)
+        self.set_marital_status(marital_status)
+
+    def _set_random_employment_status(self):
+        if self.age < 16:
+            employment_status = 'Unemployed'
+        else:
+            employment_status = random.choice(EMPLOYMENT_STATUSES)
+        self.set_employment_status(employment_status)
+
+    def _set_random_employer(self):
+        if self.employment_status == 'Employed':
+            # we're going to set a random name here because I cannot find
+            # a company names dataset
+            employer = names.get_full_name()
+        else:
+            employer = 'N/A'
+        self.set_employer(employer)
+
+    def _set_random_insurance_provider(self):
+        insurance_provider = random.choice(INSURANCE_PROVIDERS)
+        self.set_insurance_provider(insurance_provider)
+
+    def _set_random_insurance_contact(self):
+        insurance_contact = names.get_full_name()
+        self.set_insurance_contact(insurance_contact)
+
+    def _set_random_invoice(self):
+        invoice = random.randint(1500, 7000)
+        self.set_invoice(invoice)
+
+    def _set_random_patient_amount_paid(self):
+        self.set_patient_amount_paid(0)
+
+    def _set_random_insurance_amount_paid(self):
+        self.set_patient_amount_paid(0)
+
+    def _set_random_pay_plan(self):
+        pay_plan = random.choice(['Annual', 'Monthly', 'N/A'])
+        self.set_pay_plan(pay_plan)
+
+    def _set_random_pay_history(self):
+        self.set_pay_history('')
+
+    def _set_random_insurance_account_num(self):
+        # typically between 9 and 13 digits
+        insurance_account_number = ''
+        digits = random.randint(9, 13)
+        for i in range(0, digits):
+            insurance_account_number += str(random.randint(0, 9))
+        self.set_insurance_account_num(insurance_account_number)
+
+    def _set_random_charge_history(self):
+        self.set_charge_history('')
+
     def _refresh_dict(self):
         # dictionary implementation is used here for ease of parsing
         # since naming conventions will be consistent regardless
@@ -431,6 +675,7 @@ class Patient:
                      'firstname': self.firstname,
                      'lastname': self.lastname,
                      'room_number': self.room_number,
+                     'bed_number': self.bed_number,
                      'sex': self.sex,
                      'age': self.age,
                      'height': self.height,
@@ -450,12 +695,30 @@ class Patient:
                      'medical_history': self.medical_history,
                      'photo': self.photo,
                      'phone_number': self.phone_number,
-                     'ssn': self.ssn
+                     'ssn': self.ssn,
+                     'doctor_notes': self.doctor_notes,
+                     'nurse_notes': self.nurse_notes,
+                     'address': self.address,
+                     'prescriptions': self.prescriptions,
+                     'procedures': self.procedures,
+                     'marital_status': self.marital_status,
+                     'employment_status': self.employment_status,
+                     'employer': self.employer,
+                     'insurance_provider': self.insurance_provider,
+                     'insurance_contact': self.insurance_contact,
+                     'invoice': self.invoice,
+                     'patient_amount_paid': self.patient_amount_paid,
+                     'insurance_amount_paid': self.insurance_amount_paid,
+                     'pay_plan': self.pay_plan,
+                     'pay_history': self.pay_history,
+                     'insurance_account_num': self.insurance_account_num,
+                     'charge_history': self.charge_history,
                      }
 
     # print() overloading
     def __str__(self):
         output = ''
         for key in self.data.keys():
-            output += key + ': ' + str(self.data[key]) + '\n'
+            if self.data[key] != 'None':
+                output += key + ': ' + str(self.data[key]) + '\n'
         return output

@@ -23,16 +23,28 @@ class Database:
             patient = self.create_random_patient()
         fields = ''
         values = ''
-        for key in list(patient.data.keys())[1:]:
-            if patient.data[key]:
+
+        # insert into patient_medical
+        medical_data = patient.get_patient_medical_data()
+        for key in list(medical_data.keys())[1:]:
+            if medical_data[key]:
                 fields += key + ', '
-                values += literal(str(patient.data[key])) + ','
+                values += literal(str(medical_data[key])) + ','
 
         # strip trailing commas
         fields = fields[:-2]
         values = values[:-1]
-        query = "INSERT INTO " + self.patient_table + "(" + fields + ') VALUES (' + values + ');'
-        self.cursor.execute(query)
+
+        query = "INSERT INTO patient_medical" + "(" + fields + ') VALUES (' + values + ');'
+        self.execute(query)
+
+        # insert into patient_accounting
+        accounting_data = patient.get_patient_accounting_data()
+
+        for key in list(accounting_data.keys())[1:]:
+            query = "UPDATE patient_accounting" + " SET " + key + " = " + literal(accounting_data[key]) \
+                    + " WHERE patientID = " + patient.patientID + ";"
+            self.execute(query)
 
     def commit_changes(self, override=False):
         if override:
@@ -50,8 +62,6 @@ class Database:
                                           passwd=PASSWORD, db=DATABASE)
         self.cursor = self.connection.cursor()
         self.get_user_role()
-
-
 
     def create_random_patient(self):
         # any Patient object with no input parameters will be filled with random data
@@ -86,7 +96,11 @@ class Database:
         role = role.split("@")
         role = role[0].replace("`", "")
         self.role = role
-        self.patient_table = "patient_"+self.role
+
+        if self.role == 'administrator':
+            self.patient_table = 'patient_medical'
+        else:
+            self.patient_table = "patient_" + self.role
 
     def execute(self, query):
         self.cursor.execute(query)
@@ -100,10 +114,9 @@ class Database:
         return output
 
     def save_patient_data(self, patient):
-        # TODO: keep track of values that have been changed and only update those
         for key in patient.changes:
             query = "UPDATE " + self.patient_table + " SET " + key + " = " + literal(patient.data[key]) \
-                         + " WHERE patientID = " + patient.patientID + ";"
+                    + " WHERE patientID = " + patient.patientID + ";"
             print(query)
             self.execute(query)
 
@@ -148,8 +161,11 @@ class Database:
             output = "Table Does not exist"
         except pymysql.err.OperationalError:
             output = "Access denied"
-        print(format(output))  # prints output to console
         return output
+
+    def set_user_role(self, role):
+        self.role = role
+        self.patient_table = 'patient_' + self.role
 
     def close(self):
         self.cursor.close()
@@ -183,41 +199,12 @@ class Database:
 # db.select_all('Accounts')
 
 
-# """EXAMPLE CODE FOR DATABASE CHANGES"""
-# user = 'root'
-# passw = 'AdminPass'
-# poggers = Database()
-# poggers.connect(user, passw)
+"""EXAMPLE CODE FOR DATABASE CHANGES"""
+# db = Database()
+# db.connect(ADMINUSER, ADMINPASS)
+# db.set_user_role('volunteer')
+# db.get_all_patients()
 #
-# # CREATE RANDOM PATIENT example
-# # when no input is given, random patients are automatically generated until one is approved
-# poggers.add_patient()
-#
-# # CREATE and EDIT RANDOM PATIENT example
-# # random patients are auto generated until one is approved
-# random_patient = poggers.create_random_patient()
-# random_patient.set_age('70')
-# random_patient.set_weight('150 lbs')
-# poggers.add_patient(random_patient)  # patient will be added to database with changes
-#
-# # SEARCH and EDIT EXISTING PATIENT example
-# patients_list = poggers.search_patient_by_name(lastname="Nagel")  # get all patients with lastname Nagel
-# patient = patients_list[0]  # get first patient in list (in this case there is only one)
-# patient.set_doctor_notes("Example Doctor Notes")
-# print(patient.changes)
-# print(patient)
-# poggers.save_patient_data(patient)  # save changes to database
-# poggers.commit_changes()
-#
-# # get patient data
-# print(patient.patientID)
-# print(patient.emergency_contacts)
-#
-# # see list of all patients
-# poggers.get_all_patients()
-#
-# # more search by name examples
-# poggers.search_patient_by_name(firstname="John")
-# poggers.search_patient_by_name(firstname="John", lastname="Doe")
-# poggers.search_patient_by_name(name="John Doe")
-# poggers.search_patient_by_name()  # same as get_all_patients()
+# db.set_user_role('nurse')
+# db.get_all_patients()
+
