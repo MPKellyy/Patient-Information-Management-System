@@ -36,6 +36,7 @@ class Database:
         values = values[:-1]
 
         query = "INSERT INTO patient_medical" + "(" + fields + ') VALUES (' + values + ');'
+        print(query)
         self.execute(query)
 
         # insert into patient_accounting
@@ -43,7 +44,7 @@ class Database:
 
         for key in list(accounting_data.keys())[1:]:
             query = "UPDATE patient_accounting" + " SET " + key + " = " + literal(accounting_data[key]) \
-                    + " WHERE patientID = " + patient.patientID + ";"
+                    + " WHERE accountingID = " + patient.patientID + ";"
             self.execute(query)
 
     def commit_changes(self, override=False):
@@ -80,8 +81,8 @@ class Database:
 
     def get_all_patients(self):
         # return list of patient objects
-        raw_output = self.select_all(self.patient_table)
-        patients = self._patients_query_to_objects(raw_output)
+        patients_list = self.select_all(self.patient_table)
+        patients = self._patients_query_to_objects(patients_list)
         for p in patients:
             print(p)
             print()
@@ -118,7 +119,11 @@ class Database:
             query = "UPDATE " + self.patient_table + " SET " + key + " = " + literal(patient.data[key]) \
                     + " WHERE patientID = " + patient.patientID + ";"
             print(query)
-            self.execute(query)
+            try:
+                self.execute(query)
+                print("Change to field \'" + key + "\' successful. ")
+            except pymysql.err.OperationalError:
+                print("You are logged in as a " + self.role + ". You do not have access to field: " + key)
 
     def search_patient_by_name(self, name=None, firstname=None, lastname=None):
         """example use:
@@ -156,7 +161,7 @@ class Database:
 
     def select_all(self, arg1):
         try:
-            output = self.execute("SELECT * FROM " + arg1 + ";")  # queries the table
+            output = self.dict_execute("SELECT * FROM " + arg1 + ";")  # queries the table
         except pymysql.err.ProgrammingError:  # in case table doesnt exist
             output = "Table Does not exist"
         except pymysql.err.OperationalError:
@@ -172,18 +177,10 @@ class Database:
         self.connection.close()
 
     # PRIVATE METHODS
-    def _patients_query_to_objects(self, raw_output):
-        patients_list = [[item for item in raw_output[i]] for i in range(0, len(raw_output))]
-        raw_fields = self.get_columns(self.patient_table)
-        fields = [item[0] for item in raw_fields]
-
+    def _patients_query_to_objects(self, patients_list):
         output = []
-        for p in patients_list:
-            data = {}
-            for i in range(0, len(p)):
-                key = fields[i].replace('(', '').replace(')', '').replace(',', '')
-                data[key] = p[i]
-            new_patient = Patient(patientID=p[0], data=data)
+        for data in patients_list:
+            new_patient = Patient(patientID=data['patientID'], data=data)
             output.append(new_patient)
         return output
 
@@ -202,9 +199,10 @@ class Database:
 """EXAMPLE CODE FOR DATABASE CHANGES"""
 # db = Database()
 # db.connect(ADMINUSER, ADMINPASS)
-# db.set_user_role('volunteer')
-# db.get_all_patients()
-#
-# db.set_user_role('nurse')
-# db.get_all_patients()
+# db.set_user_role('administrator')
+# db.add_patient()
+
+#db.commit_changes()
+
+#db.get_all_patients()
 

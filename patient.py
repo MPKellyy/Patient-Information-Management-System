@@ -22,9 +22,10 @@ class Patient:
                  admission_date=None, admission_reason=None, discharge_date=None, emergency_contacts=None,
                  family_doctor=None, medical_history=None, photo=None, phone_number=None, ssn=None,
                  doctor_notes=None, nurse_notes=None, address=None, prescriptions=None, procedures=None,
-                 marital_status=None, employment_status=None, employer=None, insurance_provider=None,
-                 insurance_contact=None, invoice=None, patient_amount_paid=None, insurance_amount_paid=None,
-                 pay_plan=None, pay_history=None, insurance_account_num=None, charge_history=None, data=None):
+                 building=None, marital_status=None, employment_status=None, employer=None,
+                 insurance_provider=None, insurance_contact=None, invoice=None, patient_amount_paid=None,
+                 insurance_amount_paid=None, pay_plan=None, pay_history=None, insurance_account_num=None,
+                 charge_history=None, insurance_num=None, data=None):
 
         if not data:
             data = {}
@@ -61,6 +62,7 @@ class Patient:
         self.address = address
         self.prescriptions = prescriptions
         self.procedures = procedures
+        self.building = building
 
         # patient_accounting attributes
         self.marital_status = marital_status
@@ -75,6 +77,9 @@ class Patient:
         self.pay_history = pay_history
         self.insurance_account_num = insurance_account_num
         self.charge_history = charge_history
+        self.insurance_num = insurance_num
+
+        # dictionary version of data
         self.data = data
 
         # keep track of edits
@@ -107,37 +112,11 @@ class Patient:
         self.changes = []
 
     def create_random_patient_data(self):
+        # initialize dictionary
+        self._refresh_dict()
+
         # sex is used to seed name, then attributes are sequentially generated
-        self._set_random_sex()
-        self._set_random_firstname()
-        self._set_random_lastname()
-        self._set_random_room_number()
-        self._set_random_age()
-        self._set_random_height()
-        self._set_random_weight()
-        self._set_random_race()
-        self._set_random_care_provider()
-        self._set_random_medical_risks()
-        self._set_random_admission_date()
-        self._set_random_discharge_date()
-        self._set_random_admission_reason()
-        self._set_random_emergency_contacts()
-        self._set_random_family_doctor()
-        self._set_random_phone_number()
-        self._set_random_ssn()
-        self._set_random_address()
-        self._set_random_marital_status()
-        self._set_random_employment_status()
-        self._set_random_employer()
-        self._set_random_insurance_provider()
-        self._set_random_insurance_contact()
-        self._set_random_invoice()
-        self._set_random_patient_amount_paid()
-        self._set_random_insurance_amount_paid()
-        self._set_random_pay_plan()
-        self._set_random_pay_history()
-        self._set_random_insurance_account_num()
-        self._set_random_charge_history()
+        self.randomize_all_missing_data()
 
         # add all data to dict
         self._refresh_dict()
@@ -187,6 +166,7 @@ class Patient:
                 'address': self.address,
                 'prescriptions': self.prescriptions,
                 'procedures': self.procedures,
+                'building': self.building,
                 }
 
     def get_patient_accounting_data(self):
@@ -207,6 +187,7 @@ class Patient:
                 'phone_number': self.phone_number,
                 'insurance_account_num': self.insurance_account_num,
                 'charge_history': self.charge_history,
+                'insurance_num': self.insurance_num,
                 }
 
     # setters........ so many of them
@@ -361,6 +342,11 @@ class Patient:
         self.data['procedures'] = new
         self.changes.append('procedures')
 
+    def set_building(self, new):
+        self.building = new
+        self.data['building'] = new
+        self.changes.append('building')
+
     def set_marital_status(self, new):
         self.marital_status = new
         self.data['marital_status'] = new
@@ -421,7 +407,12 @@ class Patient:
         self.data['charge_history'] = new
         self.changes.append('charge_history')
 
-        # private methods
+    def set_insurance_num(self, new):
+        self.insurance_num = new
+        self.data['insurance_num'] = new
+        self.changes.append('insurance_num')
+
+    # private methods
 
     def _parse_database_input(self):
         # TODO: complete this function
@@ -591,7 +582,7 @@ class Patient:
         address = ''
 
         # generate 5 random numbers
-        for i in range(0, 5):
+        for i in range(0, 3):
             address += str(random.randint(0, 9))
 
         # some random last name (hopefully street name sounding)
@@ -600,13 +591,17 @@ class Patient:
         # choose 'st' or 'dr'
         address += random.choice([' St ', ' Dr '])
 
-        # huntsville al
-        address += 'Huntsville, AL '
+        # # huntsville al
+        # address += 'Huntsville, AL '
+        #
+        # # zipcode
+        # address += random.choice(HUNTSVILLE_ZIP_CODES)
+        #
+        # self.set_address(address)
 
-        # zipcode
-        address += random.choice(HUNTSVILLE_ZIP_CODES)
-
-        self.set_address(address)
+    def _set_random_building(self):
+        building = random.randint(1, 10)
+        self.building = building
 
     def _set_random_marital_status(self):
         # we'll assume minors are not married
@@ -659,14 +654,36 @@ class Patient:
 
     def _set_random_insurance_account_num(self):
         # typically between 9 and 13 digits
-        insurance_account_number = ''
+        insurance_account_num = ''
         digits = random.randint(9, 13)
         for i in range(0, digits):
-            insurance_account_number += str(random.randint(0, 9))
-        self.set_insurance_account_num(insurance_account_number)
+            insurance_account_num += str(random.randint(0, 9))
+        self.set_insurance_account_num(insurance_account_num)
 
     def _set_random_charge_history(self):
         self.set_charge_history('')
+
+    def _set_random_insurance_num(self):
+        # sample: 2424-78787-WXZ
+        insurance_num = ''
+
+        # four random digits
+        for i in range(0, 4):
+            insurance_num += str(random.randint(0, 9))
+
+        insurance_num += '-'
+
+        # 5 random digits
+        for i in range(0, 5):
+            insurance_num += str(random.randint(0, 9))
+
+        insurance_num += '-'
+
+        # three random letters
+        for i in range(0, 3):
+            insurance_num += chr(random.randint(65, 90))
+
+        self.set_insurance_account_num(insurance_num)
 
     def _refresh_dict(self):
         # dictionary implementation is used here for ease of parsing
@@ -719,6 +736,5 @@ class Patient:
     def __str__(self):
         output = ''
         for key in self.data.keys():
-            if self.data[key] != 'None':
-                output += key + ': ' + str(self.data[key]) + '\n'
+            output += key + ': ' + str(self.data[key]) + '\n'
         return output

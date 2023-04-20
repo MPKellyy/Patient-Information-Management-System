@@ -11,7 +11,10 @@ def create_patient_id(i):
 
 
 def literal(s):
-    return "\'" + s + "\'"
+    if s:
+        return "\'" + str(s) + "\'"
+    else:
+        return "\'\'"
 
 
 def automate_class_input(l):
