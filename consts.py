@@ -4,7 +4,7 @@
 import json
 
 # TODO: PUT YOUR OWN PATH HERE; FILE IN DISCORD UNDER RESOURCES
-JSON_PATH = '/Users/wasp/patient_information.json'
+JSON_PATH = '/Users/Michael/patient_information.json'
 data = json.load(open(JSON_PATH))
 HOST = data['HOST']
 PORT = int(data['PORT'])

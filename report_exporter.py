@@ -31,26 +31,53 @@ def _format_data(patient, role):
         name = patient.firstname + " " + patient.lastname
         report.append("Patient name: " + name)
 
+        address = patient.address
+        report.append("Address: " + str(address))
+
         phone_number = patient.phone_number
         report.append("Phone number: " + str(phone_number))
 
+        marital_status = patient.marital_status
+        report.append("Marital status: " + str(marital_status))
+
+        employment_status = patient.employment_status
+        report.append("Employment status: " + str(employment_status))
+
+        employer = patient.employer
+        report.append("Employer: " + str(employer))
+
         report.append("\n")
-        pass
-        # TODO: Add Insurance info to patient.py
-        # Insurance Carrier
-        # Insurance Group Number
-        # Insurance Account Number
 
-        # TODO: Add expenses to patient.py
-        # insurance_amount_paid = 500.00
-        # patient_amount_paid = 940.00
-        # patient_amount_owed = 60.00
-        # report.append("Amount paid by insurance: $" + str(insurance_amount_paid))
-        # report.append("Amount paid by patient: $" + str(patient_amount_paid))
-        # report.append("Amount owed by patient: $" + str(patient_amount_owed))
+        insurance_account_num = patient.insurance_account_num
+        report.append("Insurance account number: " + str(insurance_account_num))
 
-        # charges = {"Surgery fee": 1000.00, "Service fee": 250.00, "Misc": 250.00}
-        # report.append("Charges: " + _dict_to_string(charges, " $"))
+        insurance_provider = patient.insurance_provider
+        report.append("Insurance provider: " + str(insurance_provider))
+
+        insurance_contact = patient.insurance_contact
+        report.append("Insurance contact: " + str(insurance_contact))
+
+        invoice = patient.invoice
+        report.append("Invoice: " + str(invoice))
+
+        patient_amount_paid = patient.patient_amount_paid
+        report.append("Patient amount paid: " + str(patient_amount_paid))
+
+        insurance_amount_paid = patient.insurance_amount_paid
+        report.append("Insurance amount paid: " + str(insurance_amount_paid))
+
+        report.append("\n")
+
+        pay_plan = patient.pay_plan
+        report.append("Pay plan: " + str(pay_plan))
+
+        pay_history = patient.pay_history
+        report.append("Pay history: " + str(pay_history))
+
+        charge_history = patient.charge_history
+        report.append("Charge history: " + str(charge_history))
+
+        report.append("\n")
     elif role == "nurse" or role == "doctor":
         # Nurse and Doctor can see same information in report
         if role == "doctor":
@@ -77,6 +104,9 @@ def _format_data(patient, role):
 
         weight = patient.weight
         report.append("Weight: " + str(weight))
+
+        address = patient.address
+        report.append("Address: " + str(address))
 
         report.append("\n")
 
@@ -123,12 +153,11 @@ def _format_data(patient, role):
 
         report.append("\n")
 
-        # TODO: Add prescriptions to patient.py
-        # prescriptions = {"Morphine": ["1 every 6 hours", "24 tablets"], "Antibiotics": ["3 every 8 hours", "16 capsules"]}
-        # _add_dict_as_bullets("Prescriptions:", prescriptions, report)
-        # TODO: Add procedures to patient.py
-        # procedures = {"Surgical Extraction": ["2023-02-21, 2:30 am", "Main building", "Dr. Strange"], "Skin graft": ["2023-02-23, 5:00 pm", "Cosmetic building", "House M.D"]}
-        # _add_dict_as_bullets("Scheduled Procedures:", procedures, report)
+        prescriptions = patient.prescriptions
+        report.append("Prescriptions: " + prescriptions)
+
+        procedures = patient.procedures
+        report.append("Procedures: " + procedures)
 
         doctors_notes = patient.doctor_notes
         report.append("Doctors' notes: " + str(doctors_notes))
@@ -144,11 +173,14 @@ def _format_data(patient, role):
         room_number = patient.room_number
         report.append("Room number: " + str(room_number))
 
-        # TODO: Allowed and Restricted visitor access?
-        # allowed_visitors = patient.allowed_visitors
-        # report.append("Allowed visitors: " + str(allowed_visitors))
-        # restricted_visitors = patient.restricted_visitors
-        # report.append("Restricted visitors: " + str(restricted_visitors))
+        bed_number = patient.bed_number
+        report.append("Bed number: " + str(bed_number))
+
+        allowed_visitors = patient.allowed_visitors
+        report.append("Allowed visitors: " + str(allowed_visitors))
+
+        restricted_visitors = patient.restricted_visitors
+        report.append("Restricted visitors: " + str(restricted_visitors))
 
         report.append("\n")
 
