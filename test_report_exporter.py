@@ -62,7 +62,7 @@ def test_report_invalid_role():
 
         Expecting console to print "Save report aborted" and a PASS
     Post:
-        PASS as of 4/13/2023
+        PASS as of 4/19/2023
     """
     print("")
     db = Database()
@@ -77,9 +77,9 @@ def test_volunteer_report(num_patients=1):
 
         Expecting one of two results:
             If cancel clicked --> console prints "Save report aborted" and a PASS
-            If directory selected --> look for patient_report.pdf in directory, verify appropriate info is shown, PASS
+            If saved --> look for output file, verify appropriate info is shown, PASS
     Post:
-        PASS as of 4/13/2023
+        PASS as of 4/19/2023
     """
     _report("volunteer_test", "volunteer_test", "volunteer", num_patients)
 
@@ -91,9 +91,9 @@ def test_nurse_report(num_patients=1):
 
         Expecting one of two results:
             If cancel clicked --> console prints "Save report aborted" and a PASS
-            If directory selected --> look for patient_report.pdf in directory, verify appropriate info is shown, PASS
+            If saved --> look for output file, verify appropriate info is shown, PASS
     Post:
-        PASS as of 4/13/2023
+        PASS as of 4/19/2023
     """
     _report("nurse_test", "nurse_test", "nurse", num_patients)
 
@@ -105,8 +105,22 @@ def test_doctor_report(num_patients=1):
 
         Expecting one of two results:
             If cancel clicked --> console prints "Save report aborted" and a PASS
-            If directory selected --> look for patient_report.pdf in directory, verify appropriate info is shown, PASS
+            If saved --> look for output file, verify appropriate info is shown, PASS
     Post:
-        PASS as of 4/13/2023
+        PASS as of 4/19/2023
     """
     _report("doctor_test", "doctor_test", "doctor", num_patients)
+
+
+def test_office_report(num_patients=1):
+    """
+    Preamble:
+        Test case for generating a office report
+
+        Expecting one of two results:
+            If cancel clicked --> console prints "Save report aborted" and a PASS
+            If saved --> look for output file, verify appropriate info is shown, PASS
+    Post:
+        PASS as of 4/19/2023
+    """
+    _report("office_test", "office_test", "office", num_patients)
