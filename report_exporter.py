@@ -26,7 +26,7 @@ def _format_data(patient, role):
     # report.append("Photo: " + str(photo))
 
     # TODO: Implement office staff once accounting role is set in database
-    if role == 1 and False:
+    if role == "office":
         # Office staff
         name = patient.firstname + " " + patient.lastname
         report.append("Patient name: " + name)
@@ -258,7 +258,7 @@ def generate_report(patients, role_query):
     """
 
     try:
-        roles = ["volunteer", "nurse", "doctor"]
+        roles = ["volunteer", "nurse", "doctor", "office"]
         role = role_query[0][0].split("@")[0]
         role = role[1:len(role) - 1]
         assert role in roles
