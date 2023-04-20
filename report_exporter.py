@@ -51,6 +51,9 @@ def _format_data(patient, role):
         insurance_account_num = patient.insurance_account_num
         report.append("Insurance account number: " + str(insurance_account_num))
 
+        insurance_num = patient.insurance_num
+        report.append("Group number: " + str(insurance_num))
+
         insurance_provider = patient.insurance_provider
         report.append("Insurance provider: " + str(insurance_provider))
 
@@ -78,6 +81,9 @@ def _format_data(patient, role):
         report.append("Charge history: " + str(charge_history))
 
         report.append("\n")
+
+        building = patient.building
+        report.append("Building: " + str(building))
 
         room_number = patient.room_number
         report.append("Room number: " + str(room_number))
@@ -167,6 +173,9 @@ def _format_data(patient, role):
 
         report.append("\n")
 
+        building = patient.building
+        report.append("Building: " + str(building))
+
         room_number = patient.room_number
         report.append("Room number: " + str(room_number))
 
@@ -229,6 +238,9 @@ def _format_data(patient, role):
     else:
         name = patient.firstname + " " + patient.lastname
         report.append("Patient name: " + str(name))
+
+        building = patient.building
+        report.append("Building: " + str(building))
 
         room_number = patient.room_number
         report.append("Room number: " + str(room_number))
