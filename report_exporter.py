@@ -78,6 +78,63 @@ def _format_data(patient, role):
         report.append("Charge history: " + str(charge_history))
 
         report.append("\n")
+
+        room_number = patient.room_number
+        report.append("Room number: " + str(room_number))
+
+        bed_number = patient.bed_number
+        report.append("Bed number: " + str(bed_number))
+
+        dob = patient.dob
+        report.append("Date of birth: " + str(dob))
+
+        age = patient.age
+        report.append("Age: " + str(age))
+
+        sex = patient.sex
+        report.append("Sex: " + str(sex))
+
+        race = patient.race
+        report.append("Race: " + str(race))
+
+        height = patient.height
+        report.append("Height: " + str(height))
+
+        weight = patient.weight
+        report.append("Weight: " + str(weight))
+
+        report.append("\n")
+
+        admission_date = patient.admission_date
+        discharge_date = patient.discharge_date
+        report.append("Admission date: " + str(admission_date))
+        report.append("Discharge date: " + str(discharge_date))
+
+        family_doctor = patient.family_doctor
+        report.append("Family doctor: " + family_doctor)
+
+        care_provider = patient.care_provider
+        report.append("Care provider: " + care_provider)
+
+        current_status = patient.current_status
+        report.append("Current status: " + str(current_status))
+
+        medical_risks = patient.medical_risks
+        report.append("Medical risks: " + str(medical_risks))
+
+        report.append("\n")
+
+        emergency_contacts = patient.emergency_contacts
+        report.append("Emergency contacts: " + str(emergency_contacts))
+
+        allowed_visitors = patient.allowed_visitors
+        report.append("Allowed visitors: " + str(allowed_visitors))
+
+        restricted_visitors = patient.restricted_visitors
+        report.append("Restricted visitors: " + str(restricted_visitors))
+
+        report.append("\n")
+
     elif role == "nurse" or role == "doctor":
         # Nurse and Doctor can see same information in report
         if role == "doctor":
@@ -112,6 +169,9 @@ def _format_data(patient, role):
 
         room_number = patient.room_number
         report.append("Room number: " + str(room_number))
+
+        bed_number = patient.bed_number
+        report.append("Bed number: " + str(bed_number))
 
         current_status = patient.current_status
         report.append("Current status: " + str(current_status))
