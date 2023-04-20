@@ -29,7 +29,7 @@ def _format_data(patient, role):
     if role == "office":
         # Office staff
         name = patient.firstname + " " + patient.lastname
-        report.append("Patient name: " + name)
+        report.append("Patient name: " + str(name))
 
         address = patient.address
         report.append("Address: " + str(address))
@@ -111,10 +111,10 @@ def _format_data(patient, role):
         report.append("Discharge date: " + str(discharge_date))
 
         family_doctor = patient.family_doctor
-        report.append("Family doctor: " + family_doctor)
+        report.append("Family doctor: " + str(family_doctor))
 
         care_provider = patient.care_provider
-        report.append("Care provider: " + care_provider)
+        report.append("Care provider: " + str(care_provider))
 
         current_status = patient.current_status
         report.append("Current status: " + str(current_status))
@@ -206,18 +206,18 @@ def _format_data(patient, role):
 
         if role == "doctor":
             family_doctor = patient.family_doctor
-            report.append("Family doctor: " + family_doctor)
+            report.append("Family doctor: " + str(family_doctor))
 
         care_provider = patient.care_provider
-        report.append("Care provider: " + care_provider)
+        report.append("Care provider: " + str(care_provider))
 
         report.append("\n")
 
         prescriptions = patient.prescriptions
-        report.append("Prescriptions: " + prescriptions)
+        report.append("Prescriptions: " + str(prescriptions))
 
         procedures = patient.procedures
-        report.append("Procedures: " + procedures)
+        report.append("Procedures: " + str(procedures))
 
         doctors_notes = patient.doctor_notes
         report.append("Doctors' notes: " + str(doctors_notes))
@@ -228,7 +228,7 @@ def _format_data(patient, role):
         report.append("\n")
     else:
         name = patient.firstname + " " + patient.lastname
-        report.append("Patient name: " + name)
+        report.append("Patient name: " + str(name))
 
         room_number = patient.room_number
         report.append("Room number: " + str(room_number))

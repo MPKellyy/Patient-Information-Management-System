@@ -30,7 +30,7 @@ def test_table_creation():
 
         Note: Will always pass barring any critical errors thrown, so make sure to review console contents as well
     Post:
-        PASS as of 4/13/2023
+        PASS as of 4/19/2023
     """
 
     print("\n***Before table creation***")
@@ -53,7 +53,7 @@ def test_display_accounts():
 
         Note: Will always pass barring any critical errors thrown, so make sure to review console contents as well
     Post:
-        PASS as of 4/13/2023
+        PASS as of 4/19/2023
     """
     print("\n***Displaying accounts without permissions flag***")
     display_accounts()
@@ -70,17 +70,22 @@ def test_account_creation():
 
         Note: Will always pass barring any critical errors thrown, so make sure to review console contents as well
     Post:
-        PASS as of 4/13/2023
+        PASS as of 4/19/2023
     """
+
+    reset("volunteer_test")
+    reset("office_test")
+    reset("nurse_test")
+    reset("doctor_test")
 
     print("\n***Before account creation***")
     display_accounts()
 
     print("\n***After account creation***")
-    create_account("volunteer_test", 123, 0)
-    create_account("office_test", 123, 1)
-    create_account("nurse_test", 123, 2)
-    create_account("doctor_test", 123, 3)
+    create_account("volunteer_test", 123, "volunteer")
+    create_account("office_test", 123, "office")
+    create_account("nurse_test", 123, "nurse")
+    create_account("doctor_test", 123, "doctor")
     display_accounts(show_permissions=True)
 
     print("\n***After account deletion***")
