@@ -21,7 +21,7 @@ def create_account(username, password, role):
     """
 
     # Ensuring user input for tier is valid
-    roles = ["volunteer", "nurse", "doctor"]
+    roles = ["volunteer", "nurse", "doctor", "office"]
 
     if role not in roles:
         # Defaults to volunteer status
