@@ -28,7 +28,7 @@ def create_account(username, password, role):
         role = "volunteer"
 
     # Creating account
-    db.execute("CREATE USER '" + str(username) + "' IDENTIFIED BY '" + str(password) + "';")
+    db.execute("CREATE USER '" + str(username) + "' IDENTIFIED WITH caching_sha2_password BY '" + str(password) + "';")
     db.commit_changes(override=True)
     grant_query = "GRANT '" + role + "' TO '" + username + "'@'%';"
     role_query = "SET DEFAULT ROLE '" + role + "' TO '" + username + "'@'%';"
