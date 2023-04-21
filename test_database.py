@@ -41,3 +41,25 @@ def test_dict_execute():
     test = db.execute("SELECT * FROM patient_medical")
     for i in test:
         print(type(i))
+
+
+def test_connect():
+    testdb = Database()
+    testdb.connect(ADMINUSER,ADMINPASS)
+
+def test_get_all_patients():
+    db.get_all_patients()
+
+def test_get_columns():
+    db.get_columns('patient_medical')
+
+def test_get_user_role():
+    db.get_user_role()
+
+def test_execute():
+    db.execute("SELECT * FROM patient_medical WHERE patientID = 3")
+
+
+
+
+

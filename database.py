@@ -73,6 +73,7 @@ class Database:
                 return patient
 
     def get_next_id(self):
+        # NOTE: depreciated, keeping for backup purposes
         # TODO: query database for largest patientID
         output = self.select('patientID', self.patient_table)
         patientIDs = [int(item[0]) for item in output]
