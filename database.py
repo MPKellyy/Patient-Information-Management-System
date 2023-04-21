@@ -79,13 +79,14 @@ class Database:
         patientIDs = [int(item[0]) for item in output]
         return create_patient_id(max(patientIDs) + 1)
 
-    def get_all_patients(self):
+    def get_all_patients(self, output_results=False):
         # return list of patient objects
         patients_list = self.select_all(self.patient_table)
         patients = self._patients_query_to_objects(patients_list)
-        for p in patients:
-            print(p)
-            print()
+        if output_results:
+            for p in patients:
+                print(p)
+                print()
         return patients
 
     def get_columns(self, table):
@@ -202,11 +203,11 @@ class Database:
 # db.set_user_role('administrator')
 #
 # patients = db.get_all_patients()
-
-# for p in patients:
-#     p.set_insurance_account_num(None)
-#     p.randomize_all_missing_data()
-#     db.save_patient_data(p)
 #
-# db.commit_changes()
+# p = patients[0]
+# p.set_doctor_notes("test ' test")
+# db.save_patient_data(p)
+# print(p)
+
+
 
