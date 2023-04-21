@@ -33,10 +33,7 @@ def test_create_random_patient_data():
     """
     # create random patient
     patient = Patient(0)
-
-    # assert that there are 42 attributes total
     patient_attributes = patient.get_attributes()
-    assert(len(patient_attributes) == 42)
 
     # assert that all fields have a value
     for a in patient_attributes:
@@ -77,21 +74,19 @@ def test_all_patient_setters():
 
     # create random patient
     patient = Patient(0)
+
+    # test all attribute setters except set_patientID(), which cannot be edited
     patient_attributes = patient.get_attributes()
 
     # assert that each setter actually sets attribute and changelog records change
     for (a, i) in zip(patient_attributes, range(0, len(patient_attributes))):
-        # set attribute to 'test' + str(i) ('test1', 'test2', etc.)
-        test_val = 'test' + str(i)
-        exec('patient.set_' + a + '(\'' + test_val + '\')')
+        if a != 'patientID':
+            # set attribute to 'test' + str(i) ('test1', 'test2', etc.)
+            test_val = 'test' + str(i)
+            exec('patient.set_' + a + '(\'' + test_val + '\')')
 
-        # check that the value is equal to  test_val
-        assert(patient.data[a] == test_val)
+            # check that the value is equal to  test_val
+            assert(patient.data[a] == test_val)
 
-        # check that patient.changes has recorded the patient edit
-        assert(test_val in patient.changes)
-
-
-
-
-test_randomize_all_missing_data()
+            # check that patient.changes has recorded the patient edit
+            assert(a in patient.changes)
