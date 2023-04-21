@@ -3,7 +3,6 @@
 import pandas as pd
 import pymysql
 import pymysql.cursors
-import cryptography
 from consts import *
 from patient import Patient
 from util import create_patient_id, literal
@@ -47,7 +46,7 @@ class Database:
                     + " WHERE accountingID = " + patient.patientID + ";"
             self.execute(query)
 
-    def commit_changes(self, override=False):
+    def commit_changes(self, override=True):
         if override:
             self.connection.commit()
         else:
