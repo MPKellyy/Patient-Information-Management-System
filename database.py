@@ -48,7 +48,7 @@ class Database:
             self.execute(query)
 
     def commit_changes(self, override=True):
-        if not override:
+        if override:
             self.connection.commit()
         else:
             verification = input("Are you sure you would like to commit changes to database? (y/n) ")
@@ -205,7 +205,7 @@ class Database:
 # patients = db.get_all_patients()
 #
 # p = patients[0]
-# p.set_doctor_notes("test ' test")
+# p.set_doctor_notes("test \n test")
 # db.save_patient_data(p)
 # print(p)
 
