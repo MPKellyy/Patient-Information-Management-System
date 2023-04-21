@@ -123,17 +123,23 @@ class Patient:
 
     def randomize_all_missing_data(self):
         for key in list(self.data.keys())[1:]:
-            if not self.data[key]:
+            if not self.data[key] or self.data[key] == 'None':
                 try:
                     exec("self._set_random_" + key + "()")
                 except AttributeError:
-                    pass
+                    exec("self.set_" + key + "(" + "\'NULL\'" + ")")
 
     def get_full_name(self):
         if self.firstname and self.lastname:
             return self.firstname + " " + self.lastname
         else:
             return 'Unknown'
+
+    def get_attributes(self):
+        return self.data.keys()
+
+    def get_patient_data_as_dict(self):
+        return self.data
 
     def get_patient_medical_data(self):
         return {'patientID': self.patientID,
@@ -417,7 +423,10 @@ class Patient:
     def _parse_database_input(self):
         # TODO: complete this function
         for key in self.data.keys():
-            exec("self.set_" + key + "(" + literal(str(self.data[key])) + ")")
+            if str(self.data[key]) == 'b\'NULL\'':
+                exec("self.set_" + key + "(" + str(self.data[key]) + ")")
+            else:
+                exec("self.set_" + key + "(" + literal(str(self.data[key])) + ")")
         pass
 
     def _set_random_firstname(self):
@@ -437,7 +446,7 @@ class Patient:
         self.set_room_number(random.randint(1, 50))
 
     def _set_random_bed_number(self):
-        self.set_room_number(random.randint(1, 250))
+        self.set_bed_number(random.randint(1, 250))
 
     def _set_random_age(self):
         # setting a random age changes the date of birth automatically
@@ -511,9 +520,6 @@ class Patient:
         # TODO: set this to a nurse/doctor in the system instead of just a random name
         self.set_care_provider(names.get_full_name())
 
-    def _set_random_medical_risks(self):
-        self.set_medical_risks('None')
-
     def _set_random_admission_date(self):
         # note: also impacts 'current status' as of now
 
@@ -582,7 +588,7 @@ class Patient:
         address = ''
 
         # generate 5 random numbers
-        for i in range(0, 3):
+        for i in range(0, 5):
             address += str(random.randint(0, 9))
 
         # some random last name (hopefully street name sounding)
@@ -591,13 +597,13 @@ class Patient:
         # choose 'st' or 'dr'
         address += random.choice([' St ', ' Dr '])
 
-        # # huntsville al
-        # address += 'Huntsville, AL '
-        #
-        # # zipcode
-        # address += random.choice(HUNTSVILLE_ZIP_CODES)
-        #
-        # self.set_address(address)
+        # huntsville al
+        address += 'Huntsville, AL '
+
+        # zipcode
+        address += random.choice(HUNTSVILLE_ZIP_CODES)
+
+        self.set_address(address)
 
     def _set_random_building(self):
         building = random.randint(1, 10)
@@ -605,14 +611,14 @@ class Patient:
 
     def _set_random_marital_status(self):
         # we'll assume minors are not married
-        if self.age < 18:
+        if int(self.age) < 18:
             marital_status = 'Unmarried'
         else:
             marital_status = random.choice(MARITAL_STATUSES)
         self.set_marital_status(marital_status)
 
     def _set_random_employment_status(self):
-        if self.age < 16:
+        if int(self.age) < 16:
             employment_status = 'Unemployed'
         else:
             employment_status = random.choice(EMPLOYMENT_STATUSES)
@@ -640,17 +646,16 @@ class Patient:
         self.set_invoice(invoice)
 
     def _set_random_patient_amount_paid(self):
-        self.set_patient_amount_paid(0)
+        patient_amount_paid = random.randint(0, self.invoice // 3)
+        self.set_patient_amount_paid(patient_amount_paid)
 
     def _set_random_insurance_amount_paid(self):
-        self.set_patient_amount_paid(0)
+        insurance_amount_paid = random.randint(0, (self.invoice - self.patient_amount_paid))
+        self.set_insurance_amount_paid(insurance_amount_paid)
 
     def _set_random_pay_plan(self):
         pay_plan = random.choice(['Annual', 'Monthly', 'N/A'])
         self.set_pay_plan(pay_plan)
-
-    def _set_random_pay_history(self):
-        self.set_pay_history('')
 
     def _set_random_insurance_account_num(self):
         # typically between 9 and 13 digits
@@ -659,9 +664,6 @@ class Patient:
         for i in range(0, digits):
             insurance_account_num += str(random.randint(0, 9))
         self.set_insurance_account_num(insurance_account_num)
-
-    def _set_random_charge_history(self):
-        self.set_charge_history('')
 
     def _set_random_insurance_num(self):
         # sample: 2424-78787-WXZ
