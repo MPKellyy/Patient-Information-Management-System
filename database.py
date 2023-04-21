@@ -47,7 +47,7 @@ class Database:
                     + " WHERE accountingID = " + patient.patientID + ";"
             self.execute(query)
 
-    def commit_changes(self, override=False):
+    def commit_changes(self, override=True):
         if not override:
             self.connection.commit()
         else:
