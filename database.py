@@ -48,7 +48,7 @@ class Database:
             self.execute(query)
 
     def commit_changes(self, override=False):
-        if override:
+        if not override:
             self.connection.commit()
         else:
             verification = input("Are you sure you would like to commit changes to database? (y/n) ")
