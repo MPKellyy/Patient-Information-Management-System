@@ -116,8 +116,8 @@ class Database:
 
     def save_patient_data(self, patient):
         for key in patient.changes:
-            query = "UPDATE " + self.patient_table + " SET " + key + " = " + literal(patient.data[key]) \
-                    + " WHERE patientID = " + patient.patientID + ";"
+            query = "UPDATE " + self.patient_table + " SET " + str(key) + " = " + literal(patient.data[key]) \
+                    + " WHERE patientID = " + str(patient.patientID) + ";"
             print(query)
             try:
                 self.execute(query)
@@ -200,9 +200,13 @@ class Database:
 # db = Database()
 # db.connect(ADMINUSER, ADMINPASS)
 # db.set_user_role('administrator')
-# db.add_patient()
+#
+# patients = db.get_all_patients()
 
-#db.commit_changes()
-
-#db.get_all_patients()
+# for p in patients:
+#     p.set_insurance_account_num(None)
+#     p.randomize_all_missing_data()
+#     db.save_patient_data(p)
+#
+# db.commit_changes()
 

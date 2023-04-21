@@ -123,7 +123,7 @@ class Patient:
 
     def randomize_all_missing_data(self):
         for key in list(self.data.keys())[1:]:
-            if not self.data[key] or self.data[key] == 'None':
+            if not self.data[key] or self.data[key] == 'None' or self.data[key] == 'NULL':
                 try:
                     exec("self._set_random_" + key + "()")
                 except AttributeError:
@@ -198,231 +198,269 @@ class Patient:
 
     # setters........ so many of them
 
-    def set_patientID(self, new):
-        self.patientID = new
-        self.data['patientID'] = new
-        self.changes.append('patientID')
-
     def set_firstname(self, new):
-        self.firstname = new
-        self.data['firstname'] = new
-        self.changes.append('firstname')
+        if self.firstname is not new:
+            self.firstname = new
+            self.data['firstname'] = new
+            self.changes.append('firstname')
 
     def set_lastname(self, new):
-        self.lastname = new
-        self.data['lastname'] = new
-        self.changes.append('lastname')
+        if self.lastname is not new:
+            self.lastname = new
+            self.data['lastname'] = new
+            self.changes.append('lastname')
 
     def set_room_number(self, new):
-        self.room_number = new
-        self.data['room_number'] = new
-        self.changes.append('room_number')
+        if self.room_number is not new:
+            self.room_number = new
+            self.data['room_number'] = new
+            self.changes.append('room_number')
 
     def set_bed_number(self, new):
-        self.bed_number = new
-        self.data['bed_number'] = new
-        self.changes.append('bed_number')
+        if self.bed_number is not new:
+            self.bed_number = new
+            self.data['bed_number'] = new
+            self.changes.append('bed_number')
 
     def set_sex(self, new):
-        self.sex = new
-        self.data['sex'] = new
-        self.changes.append('sex')
+        if self.sex is not new:
+            self.sex = new
+            self.data['sex'] = new
+            self.changes.append('sex')
 
     def set_age(self, new):
-        self.age = new
-        self.data['age'] = new
-        self.changes.append('age')
+        if self.age is not new:
+            self.age = new
+            self.data['age'] = new
+            self.changes.append('age')
 
     def set_height(self, new):
-        self.height = new
-        self.data['height'] = new
-        self.changes.append('height')
+        if self.height is not new:
+            self.height = new
+            self.data['height'] = new
+            self.changes.append('height')
 
     def set_weight(self, new):
-        self.weight = new
-        self.data['weight'] = new
-        self.changes.append('weight')
+        if self.weight is not new:
+            self.weight = new
+            self.data['weight'] = new
+            self.changes.append('weight')
 
     def set_race(self, new):
-        self.race = new
-        self.data['race'] = new
-        self.changes.append('race')
+        if self.race is not new:
+            self.race = new
+            self.data['race'] = new
+            self.changes.append('race')
 
     def set_dob(self, new):
-        self.dob = new
-        self.data['dob'] = new
-        self.changes.append('dob')
+        if self.dob is not new:
+            self.dob = new
+            self.data['dob'] = new
+            self.changes.append('dob')
 
     def set_care_provider(self, new):
-        self.care_provider = new
-        self.data['care_provider'] = new
-        self.changes.append('care_provider')
+        if self.care_provider is not new:
+            self.care_provider = new
+            self.data['care_provider'] = new
+            self.changes.append('care_provider')
 
     def set_current_status(self, new):
-        self.current_status = new
-        self.data['current_status'] = new
-        self.changes.append('current_status')
+        if self.current_status is not new:
+            self.current_status = new
+            self.data['current_status'] = new
+            self.changes.append('current_status')
 
     def set_medical_risks(self, new):
-        self.medical_risks = new
-        self.data['medical_risks'] = new
-        self.changes.append('medical_risks')
+        if self.medical_risks is not new:
+            self.medical_risks = new
+            self.data['medical_risks'] = new
+            self.changes.append('medical_risks')
 
     def set_allowed_visitors(self, new):
-        self.allowed_visitors = new
-        self.data['allowed_visitors'] = new
-        self.changes.append('allowed_visitors')
+        if self.allowed_visitors is not new:
+            self.allowed_visitors = new
+            self.data['allowed_visitors'] = new
+            self.changes.append('allowed_visitors')
 
     def set_restricted_visitors(self, new):
-        self.restricted_visitors = new
-        self.data['restricted_visitors'] = new
-        self.changes.append('restricted_visitors')
+        if self.restricted_visitors is not new:
+            self.restricted_visitors = new
+            self.data['restricted_visitors'] = new
+            self.changes.append('restricted_visitors')
 
     def set_admission_date(self, new):
-        self.admission_date = new
-        self.data['admission_date'] = new
-        self.changes.append('admission_date')
+        if self.admission_date is not new:
+            self.admission_date = new
+            self.data['admission_date'] = new
+            self.changes.append('admission_date')
 
     def set_admission_reason(self, new):
-        self.admission_reason = new
-        self.data['admission_reason'] = new
-        self.changes.append('admission_reason')
+        if self.admission_reason is not new:
+            self.admission_reason = new
+            self.data['admission_reason'] = new
+            self.changes.append('admission_reason')
 
     def set_discharge_date(self, new):
-        self.discharge_date = new
-        self.data['discharge_date'] = new
-        self.changes.append('discharge_date')
+        if self.discharge_date is not new:
+            self.discharge_date = new
+            self.data['discharge_date'] = new
+            self.changes.append('discharge_date')
 
     def set_emergency_contacts(self, new):
-        self.emergency_contacts = new
-        self.data['emergency_contacts'] = new
-        self.changes.append('emergency_contacts')
+        if self.emergency_contacts is not new:
+            self.emergency_contacts = new
+            self.data['emergency_contacts'] = new
+            self.changes.append('emergency_contacts')
 
     def set_family_doctor(self, new):
-        self.family_doctor = new
-        self.data['family_doctor'] = new
-        self.changes.append('family_doctor')
+        if self.family_doctor is not new:
+            self.family_doctor = new
+            self.data['family_doctor'] = new
+            self.changes.append('family_doctor')
 
     def set_medical_history(self, new):
-        self.medical_history = new
-        self.data['medical_history'] = new
-        self.changes.append('medical_history')
+        if self.medical_history is not new:
+            self.medical_history = new
+            self.data['medical_history'] = new
+            self.changes.append('medical_history')
 
     def set_photo(self, new):
-        self.photo = new
-        self.data['photo'] = new
-        self.changes.append('photo')
+        if self.photo is not new:
+            self.photo = new
+            self.data['photo'] = new
+            self.changes.append('photo')
 
     def set_phone_number(self, new):
-        self.phone_number = new
-        self.data['phone_number'] = new
-        self.changes.append('phone_number')
+        if self.phone_number is not new:
+            self.phone_number = new
+            self.data['phone_number'] = new
+            self.changes.append('phone_number')
 
     def set_ssn(self, new):
-        self.ssn = new
-        self.data['ssn'] = new
-        self.changes.append('ssn')
+        if self.ssn is not new:
+            self.ssn = new
+            self.data['ssn'] = new
+            self.changes.append('ssn')
 
     def set_doctor_notes(self, new):
-        self.doctor_notes = new
-        self.data['doctor_notes'] = new
-        self.changes.append('doctor_notes')
+        if self.doctor_notes is not new:
+            self.doctor_notes = new
+            self.data['doctor_notes'] = new
+            self.changes.append('doctor_notes')
 
     def set_nurse_notes(self, new):
-        self.nurse_notes = new
-        self.data['nurse_notes'] = new
-        self.changes.append('nurse_notes')
+        if self.nurse_notes is not new:
+            self.nurse_notes = new
+            self.data['nurse_notes'] = new
+            self.changes.append('nurse_notes')
 
     def set_address(self, new):
-        self.address = new
-        self.data['address'] = new
-        self.changes.append('address')
+        if self.address is not new:
+            self.address = new
+            self.data['address'] = new
+            self.changes.append('address')
 
     def set_prescriptions(self, new):
-        self.prescriptions = new
-        self.data['prescriptions'] = new
-        self.changes.append('prescriptions')
+        if self.prescriptions is not new:
+            self.prescriptions = new
+            self.data['prescriptions'] = new
+            self.changes.append('prescriptions')
 
     def set_procedures(self, new):
-        self.procedures = new
-        self.data['procedures'] = new
-        self.changes.append('procedures')
+        if self.procedures is not new:
+            self.procedures = new
+            self.data['procedures'] = new
+            self.changes.append('procedures')
 
     def set_building(self, new):
-        self.building = new
-        self.data['building'] = new
-        self.changes.append('building')
+        if self.building is not new:
+            self.building = new
+            self.data['building'] = new
+            self.changes.append('building')
 
     def set_marital_status(self, new):
-        self.marital_status = new
-        self.data['marital_status'] = new
-        self.changes.append('marital_status')
+        if self.marital_status is not new:
+            self.marital_status = new
+            self.data['marital_status'] = new
+            self.changes.append('marital_status')
 
     def set_employment_status(self, new):
-        self.employment_status = new
-        self.data['employment_status'] = new
-        self.changes.append('employment_status')
+        if self.employment_status is not new:
+            self.employment_status = new
+            self.data['employment_status'] = new
+            self.changes.append('employment_status')
 
     def set_employer(self, new):
-        self.employer = new
-        self.data['employer'] = new
-        self.changes.append('employer')
+        if self.employer is not new:
+            self.employer = new
+            self.data['employer'] = new
+            self.changes.append('employer')
 
     def set_insurance_provider(self, new):
-        self.insurance_provider = new
-        self.data['insurance_provider'] = new
-        self.changes.append('insurance_provider')
+        if self.insurance_provider is not new:
+            self.insurance_provider = new
+            self.data['insurance_provider'] = new
+            self.changes.append('insurance_provider')
 
     def set_insurance_contact(self, new):
-        self.insurance_contact = new
-        self.data['insurance_contact'] = new
-        self.changes.append('insurance_contact')
+        if self.insurance_contact is not new:
+            self.insurance_contact = new
+            self.data['insurance_contact'] = new
+            self.changes.append('insurance_contact')
 
     def set_invoice(self, new):
-        self.invoice = new
-        self.data['invoice'] = new
-        self.changes.append('invoice')
+        if self.invoice is not new:
+            self.invoice = new
+            self.data['invoice'] = new
+            self.changes.append('invoice')
 
     def set_patient_amount_paid(self, new):
-        self.patient_amount_paid = new
-        self.data['patient_amount_paid'] = new
-        self.changes.append('patient_amount_paid')
+        if self.patient_amount_paid is not new:
+            self.patient_amount_paid = new
+            self.data['patient_amount_paid'] = new
+            self.changes.append('patient_amount_paid')
 
     def set_insurance_amount_paid(self, new):
-        self.insurance_amount_paid = new
-        self.data['insurance_amount_paid'] = new
-        self.changes.append('insurance_amount_paid')
+        if self.insurance_amount_paid is not new:
+            self.insurance_amount_paid = new
+            self.data['insurance_amount_paid'] = new
+            self.changes.append('insurance_amount_paid')
 
     def set_pay_plan(self, new):
-        self.pay_plan = new
-        self.data['pay_plan'] = new
-        self.changes.append('pay_plan')
+        if self.pay_plan is not new:
+            self.pay_plan = new
+            self.data['pay_plan'] = new
+            self.changes.append('pay_plan')
 
     def set_pay_history(self, new):
-        self.pay_history = new
-        self.data['pay_history'] = new
-        self.changes.append('pay_history')
+        if self.pay_history is not new:
+            self.pay_history = new
+            self.data['pay_history'] = new
+            self.changes.append('pay_history')
 
     def set_insurance_account_num(self, new):
-        self.insurance_account_num = new
-        self.data['insurance_account_num'] = new
-        self.changes.append('insurance_account_num')
+        if self.insurance_account_num is not new:
+            self.insurance_account_num = new
+            self.data['insurance_account_num'] = new
+            self.changes.append('insurance_account_num')
 
     def set_charge_history(self, new):
-        self.charge_history = new
-        self.data['charge_history'] = new
-        self.changes.append('charge_history')
+        if self.charge_history is not new:
+            self.charge_history = new
+            self.data['charge_history'] = new
+            self.changes.append('charge_history')
 
     def set_insurance_num(self, new):
-        self.insurance_num = new
-        self.data['insurance_num'] = new
-        self.changes.append('insurance_num')
+        if self.insurance_num is not new:
+            self.insurance_num = new
+            self.data['insurance_num'] = new
+            self.changes.append('insurance_num')
 
-    # private methods
+            # private methods
 
     def _parse_database_input(self):
         # TODO: complete this function
-        for key in self.data.keys():
+        for key in list(self.data.keys())[1:]:
             if str(self.data[key]) == 'b\'NULL\'':
                 exec("self.set_" + key + "(" + str(self.data[key]) + ")")
             else:
@@ -685,7 +723,7 @@ class Patient:
         for i in range(0, 3):
             insurance_num += chr(random.randint(65, 90))
 
-        self.set_insurance_account_num(insurance_num)
+        self.set_insurance_num(insurance_num)
 
     def _refresh_dict(self):
         # dictionary implementation is used here for ease of parsing
@@ -720,6 +758,7 @@ class Patient:
                      'address': self.address,
                      'prescriptions': self.prescriptions,
                      'procedures': self.procedures,
+                     'building': self.building,
                      'marital_status': self.marital_status,
                      'employment_status': self.employment_status,
                      'employer': self.employer,
@@ -732,6 +771,7 @@ class Patient:
                      'pay_history': self.pay_history,
                      'insurance_account_num': self.insurance_account_num,
                      'charge_history': self.charge_history,
+                     'insurance_num': self.insurance_num
                      }
 
     # print() overloading
