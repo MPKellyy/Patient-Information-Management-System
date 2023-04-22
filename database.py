@@ -79,13 +79,14 @@ class Database:
         patientIDs = [int(item[0]) for item in output]
         return create_patient_id(max(patientIDs) + 1)
 
-    def get_all_patients(self):
+    def get_all_patients(self, output_results=False):
         # return list of patient objects
         patients_list = self.select_all(self.patient_table)
         patients = self._patients_query_to_objects(patients_list)
-        for p in patients:
-            print(p)
-            print()
+        if output_results:
+            for p in patients:
+                print(p)
+                print()
         return patients
 
     def get_columns(self, table):
@@ -116,8 +117,8 @@ class Database:
 
     def save_patient_data(self, patient):
         for key in patient.changes:
-            query = "UPDATE " + self.patient_table + " SET " + key + " = " + literal(patient.data[key]) \
-                    + " WHERE patientID = " + patient.patientID + ";"
+            query = "UPDATE " + self.patient_table + " SET " + str(key) + " = " + literal(patient.data[key]) \
+                    + " WHERE patientID = " + str(patient.patientID) + ";"
             print(query)
             try:
                 self.execute(query)
@@ -200,9 +201,13 @@ class Database:
 # db = Database()
 # db.connect(ADMINUSER, ADMINPASS)
 # db.set_user_role('administrator')
-# db.add_patient()
+#
+# patients = db.get_all_patients()
+#
+# p = patients[0]
+# p.set_doctor_notes("test \n test")
+# db.save_patient_data(p)
+# print(p)
 
-#db.commit_changes()
 
-#db.get_all_patients()
 

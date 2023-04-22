@@ -4,7 +4,7 @@ db.connect(ADMINUSER, ADMINPASS)
 
 '''
 HEADER:
-This file is a test case document for report_exporter. Whenever a test case is added to this document, you MUST provide
+This file is a test case document for database. Whenever a test case is added to this document, you MUST provide
  a sufficient description of the case you are trying to assess.
 
 USEFUL INFO:

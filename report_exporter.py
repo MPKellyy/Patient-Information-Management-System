@@ -22,9 +22,6 @@ def _format_data(patient, role):
     report = ["Date of access: " + str(datetime.date.today()),
               "Time of access: " + datetime.datetime.now().strftime("%H:%M:%S"), "\n"]
 
-    # photo = patient.photo
-    # report.append("Photo: " + str(photo))
-
     # TODO: Implement office staff once accounting role is set in database
     if role == "office":
         # Office staff
@@ -143,9 +140,8 @@ def _format_data(patient, role):
 
     elif role == "nurse" or role == "doctor":
         # Nurse and Doctor can see same information in report
-        if role == "doctor":
-            ssn = patient.ssn
-            report.append("SSN: " + str(ssn))
+        ssn = patient.ssn
+        report.append("SSN: " + str(ssn))
 
         name = patient.firstname + " " + patient.lastname
         report.append("Patient name: " + str(name))
@@ -213,9 +209,8 @@ def _format_data(patient, role):
         emergency_contacts = patient.emergency_contacts
         report.append("Emergency contacts: " + str(emergency_contacts))
 
-        if role == "doctor":
-            family_doctor = patient.family_doctor
-            report.append("Family doctor: " + str(family_doctor))
+        family_doctor = patient.family_doctor
+        report.append("Family doctor: " + str(family_doctor))
 
         care_provider = patient.care_provider
         report.append("Care provider: " + str(care_provider))
@@ -235,6 +230,52 @@ def _format_data(patient, role):
         report.append("Nurses' notes: " + str(nurses_notes))
 
         report.append("\n")
+
+        marital_status = patient.marital_status
+        report.append("Marital status: " + str(marital_status))
+
+        employment_status = patient.employment_status
+        report.append("Employment status: " + str(employment_status))
+
+        employer = patient.employer
+        report.append("Employer: " + str(employer))
+
+        report.append("\n")
+
+        insurance_account_num = patient.insurance_account_num
+        report.append("Insurance account number: " + str(insurance_account_num))
+
+        insurance_num = patient.insurance_num
+        report.append("Group number: " + str(insurance_num))
+
+        insurance_provider = patient.insurance_provider
+        report.append("Insurance provider: " + str(insurance_provider))
+
+        insurance_contact = patient.insurance_contact
+        report.append("Insurance contact: " + str(insurance_contact))
+
+        invoice = patient.invoice
+        report.append("Invoice: " + str(invoice))
+
+        patient_amount_paid = patient.patient_amount_paid
+        report.append("Patient amount paid: " + str(patient_amount_paid))
+
+        insurance_amount_paid = patient.insurance_amount_paid
+        report.append("Insurance amount paid: " + str(insurance_amount_paid))
+
+        report.append("\n")
+
+        pay_plan = patient.pay_plan
+        report.append("Pay plan: " + str(pay_plan))
+
+        pay_history = patient.pay_history
+        report.append("Pay history: " + str(pay_history))
+
+        charge_history = patient.charge_history
+        report.append("Charge history: " + str(charge_history))
+
+        report.append("\n")
+
     else:
         name = patient.firstname + " " + patient.lastname
         report.append("Patient name: " + str(name))
