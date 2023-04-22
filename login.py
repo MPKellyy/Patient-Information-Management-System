@@ -5,6 +5,7 @@ from tkinter import ttk
 import pymysql.err
 import database
 import report_exporter
+import textwrap
 
 db = database.Database()
 
@@ -231,28 +232,36 @@ def run_gui():
         # tier 2/3 data
         if tier >= 2:
             # Prescriptions
+            if len(patient.prescriptions) > 70:
+                patient.set_prescriptions(textwrap.fill(patient.prescriptions))
             patient_list_of_prescriptions_label = ttk.Label(patient_frame, text="List of Prescriptions: ", font=('Arial', 12))
             patient_list_of_prescriptions_label.grid(row=1, column=3, sticky='nw')
             patient_list_of_prescriptions_data = ttk.Label(patient_frame, text=patient.prescriptions, font=('Arial', 12))
-            patient_list_of_prescriptions_data.grid(row=2, column=3, sticky='nw')
+            patient_list_of_prescriptions_data.grid(row=2, column=3, sticky='nw', rowspan=4)
 
             # Procedures
+            if len(patient.procedures) > 70:
+                patient.set_procedures(textwrap.fill(patient.procedures))
             patient_list_of_procedures_label = ttk.Label(patient_frame, text="List of Procedures: ", font=('Arial', 12))
             patient_list_of_procedures_label.grid(row=5, column=3, sticky='nw')
             patient_list_of_procedures_data = ttk.Label(patient_frame, text=patient.procedures, font=('Arial', 12))
-            patient_list_of_procedures_data.grid(row=6, column=3, sticky='nw')
+            patient_list_of_procedures_data.grid(row=6, column=3, sticky='nw', rowspan=4)
 
             # Doctor's Notes
+            if len(patient.doctor_notes) > 70:
+                patient.set_doctor_notes(textwrap.fill(patient.doctor_notes))
             patient_doctors_notes_label = ttk.Label(patient_frame, text="Doctor's Notes: ", font=('Arial', 12))
             patient_doctors_notes_label.grid(row=9, column=3, sticky='nw')
             patient_doctors_notes_data = ttk.Label(patient_frame, text=patient.doctor_notes, font=('Arial', 12))
-            patient_doctors_notes_data.grid(row=10, column=3, sticky='nw')
+            patient_doctors_notes_data.grid(row=10, column=3, sticky='nw', rowspan=8)
 
             # Nurse's Notes
+            if len(patient.nurse_notes) > 70:
+                patient.set_nurse_notes(textwrap.fill(patient.nurse_notes))
             patient_nurses_notes_label = ttk.Label(patient_frame, text="Nurse's Notes: ", font=('Arial', 12))
             patient_nurses_notes_label.grid(row=18, column=3, sticky='nw')
             patient_nurses_notes_data = ttk.Label(patient_frame, text=patient.nurse_notes, font=('Arial', 12))
-            patient_nurses_notes_data.grid(row=19, column=3, sticky='nw')
+            patient_nurses_notes_data.grid(row=19, column=3, sticky='nw', rowspan=8)
 
         buttons_frame = ttk.Frame(root, width=1260, height=110, borderwidth=5, relief='solid')
         buttons_frame.pack()
@@ -312,7 +321,7 @@ def run_gui():
         patient_doctors_notes_edit = tk.Text(patient_frame, width=60, height=8)
         patient_nurses_notes_edit = tk.Text(patient_frame, width=60, height=8)
 
-        fields = [(patient_name_edit, lambda p: p.get_full_name(), 0, 0),
+        fields = [(patient_name_edit, lambda p: p.get_full_name(), patient_name_data, 0),
                   (patient_building_edit, lambda p: p.building if p.building else "", patient_building_data, lambda new_value: patient.set_building(new_value)),
                   (patient_room_number_edit, lambda p: p.room_number if p.room_number else "", patient_room_number_data, lambda new_value: patient.set_room_number(new_value)),
                   (patient_bed_number_edit, lambda p: p.bed_number if p.bed_number else "", patient_bed_number_data, lambda new_value: patient.set_bed_number(new_value)),
@@ -359,9 +368,11 @@ def run_gui():
                     entry.insert(0, value(patient))
                     entry.grid(row=row_number, column=2, sticky='nw')
                     row_number += 1
+                    label.grid_forget()
                 for (entry, value, label, setter, row) in fields2:
                     entry.insert(1.0, value(patient))
                     entry.grid(row=row, column=3, sticky='nw', rowspan=4 if row < 8 else 8)
+                    label.grid_forget()
 
                 edit_button.config(text="Save Changes")
                 edit_or_save = False
@@ -373,18 +384,22 @@ def run_gui():
                 patient_name_data.config(text=patient.get_full_name())
                 patient_name_edit.grid_forget()
                 patient_name_edit.delete(first=0, last=tk.END)
+                patient_name_data.grid(row=1, column=2, sticky='nw')
 
+                row_number = 2
                 for (entry, value, label, setter) in fields[1:]:
                     new_value = entry.get()
                     setter(new_value)
                     label.config(text=new_value)
+                    label.grid(row=row_number, column=2, sticky='nw')
                     entry.grid_forget()
                     entry.delete(first=0, last=tk.END)
+                    row_number += 1
                 for (entry, value, label, setter, row) in fields2:
-                    last_char = '4.64' if row < 8 else '8.64'
                     new_value = entry.get(1.0, 'end-1c')
                     setter(new_value)
                     label.config(text=new_value)
+                    label.grid(row=row, column=3, sticky='nw', rowspan=4 if row < 8 else 8)
                     entry.grid_forget()
                     entry.delete(1.0, tk.END)
 
@@ -453,7 +468,7 @@ def run_gui():
                 patient_dob_label.grid(column=2, row=1, sticky='w')
                 patient_phone_label = ttk.Label(frame, text=patient.phone_number)
                 patient_phone_label.grid(column=3, row=1, sticky='w')
-                patient_address_label = ttk.Label(frame, text="Placeholder")
+                patient_address_label = ttk.Label(frame, text=patient.address)
                 patient_address_label.grid(column=4, row=1, sticky='w')
                 frame.bind('<Double-Button-1>', lambda p=patient: patient_select(patient))
                 result_list.append(frame)
