@@ -284,7 +284,6 @@ def run_gui():
         back_button.pack(anchor='w')
 
         def export():
-            print(db.execute("SELECT CURRENT_ROLE();"))
             report_exporter.generate_report([patient], db.execute("SELECT CURRENT_ROLE();"))
         export_button = ttk.Button(buttons_frame, text="Export Report", command=export)
         export_button.pack(anchor='e')
@@ -316,10 +315,10 @@ def run_gui():
         patient_amount_paid_edit = ttk.Entry(patient_frame, width=38)
         patient_amount_owed_edit = ttk.Entry(patient_frame, width=38)
         patient_history_of_charges_edit = ttk.Entry(patient_frame, width=38)
-        patient_list_of_prescriptions_edit = tk.Text(patient_frame, width=60, height=4)
-        patient_list_of_procedures_edit = tk.Text(patient_frame, width=60, height=4)
-        patient_doctors_notes_edit = tk.Text(patient_frame, width=60, height=8)
-        patient_nurses_notes_edit = tk.Text(patient_frame, width=60, height=8)
+        patient_list_of_prescriptions_edit = tk.Text(patient_frame, width=60, height=4, wrap=WORD)
+        patient_list_of_procedures_edit = tk.Text(patient_frame, width=60, height=4, wrap=WORD)
+        patient_doctors_notes_edit = tk.Text(patient_frame, width=60, height=8, wrap=WORD)
+        patient_nurses_notes_edit = tk.Text(patient_frame, width=60, height=8, wrap=WORD)
 
         fields = [(patient_name_edit, lambda p: p.get_full_name(), patient_name_data, 0),
                   (patient_building_edit, lambda p: p.building if p.building else "", patient_building_data, lambda new_value: patient.set_building(new_value)),
@@ -332,8 +331,8 @@ def run_gui():
             fields += [(patient_sex_edit, lambda p: p.sex  if p.sex else "", patient_sex_data, lambda new_value: patient.set_sex(new_value)),
                        (patient_height_edit, lambda p: p.height if p.height else "", patient_height_data, lambda new_value: patient.set_height(new_value)),
                        (patient_weight_edit, lambda p: p.weight if p.weight else "", patient_weight_data, lambda new_value: patient.set_weight(new_value)),
-                       (patient_age_edit, lambda p: p.age if p.age else "", patient_age_data, lambda new_value: patient.set_age(new_value)),
                        (patient_dob_edit, lambda p: p.dob if p.dob else "", patient_dob_data, lambda new_value: patient.set_dob(new_value)),
+                       (patient_age_edit, lambda p: p.age if p.age else "", patient_age_data, lambda new_value: patient.set_age(new_value)),
                        (patient_race_edit, lambda p: p.race if p.race else "", patient_race_data, lambda new_value: patient.set_race(new_value)),
                        (patient_admission_reason_edit, lambda p: p.admission_reason if p.admission_reason else "", patient_admission_reason_data, lambda new_value: patient.set_admission_reason(new_value)),
                        (patient_admission_date_edit, lambda p: p.admission_date if p.admission_date else "", patient_admission_date_data, lambda new_value: patient.set_admission_date(new_value)),
@@ -353,8 +352,8 @@ def run_gui():
         fields2 = []
         if tier >= 2:
             fields2 += [(patient_list_of_prescriptions_edit, lambda p: p.prescriptions  if p.prescriptions else "", patient_list_of_prescriptions_data, lambda new_value: patient.set_prescriptions(new_value), 2),
-                       (patient_list_of_procedures_edit, lambda p: p.procedures  if p.procedures else "", patient_list_of_procedures_data, lambda new_value: patient.set_procedures(new_value), 6)
-                       ]
+                        (patient_list_of_procedures_edit, lambda p: p.procedures  if p.procedures else "", patient_list_of_procedures_data, lambda new_value: patient.set_procedures(new_value), 6)
+                        ]
         if tier == 2:
             fields2 += [(patient_nurses_notes_edit, lambda p: p.nurse_notes if p.nurse_notes else "", patient_nurses_notes_data, lambda new_value: patient.set_nurse_notes(new_value), 19)]
         if tier == 3:
@@ -365,12 +364,12 @@ def run_gui():
             if edit_or_save:
                 row_number = 1
                 for (entry, value, label, setter) in fields:
-                    entry.insert(0, value(patient))
+                    entry.insert(0, value(patient).replace("\n", " "))
                     entry.grid(row=row_number, column=2, sticky='nw')
                     row_number += 1
                     label.grid_forget()
                 for (entry, value, label, setter, row) in fields2:
-                    entry.insert(1.0, value(patient))
+                    entry.insert(1.0, value(patient).replace("\n", " "))
                     entry.grid(row=row, column=3, sticky='nw', rowspan=4 if row < 8 else 8)
                     label.grid_forget()
 
@@ -388,17 +387,20 @@ def run_gui():
 
                 row_number = 2
                 for (entry, value, label, setter) in fields[1:]:
-                    new_value = entry.get()
-                    setter(new_value)
-                    label.config(text=new_value)
+                    new_value = textwrap.fill(entry.get()).strip()
+                    # print(value + '\t' + new_value)
+                    if value(patient) != new_value:
+                        setter(new_value)
+                        label.config(text=new_value)
                     label.grid(row=row_number, column=2, sticky='nw')
                     entry.grid_forget()
                     entry.delete(first=0, last=tk.END)
                     row_number += 1
                 for (entry, value, label, setter, row) in fields2:
-                    new_value = entry.get(1.0, 'end-1c')
-                    setter(new_value)
-                    label.config(text=new_value)
+                    new_value = textwrap.fill(entry.get(1.0, 'end-1c'))
+                    if value(patient) != new_value:
+                        setter(new_value)
+                        label.config(text=new_value)
                     label.grid(row=row, column=3, sticky='nw', rowspan=4 if row < 8 else 8)
                     entry.grid_forget()
                     entry.delete(1.0, tk.END)
