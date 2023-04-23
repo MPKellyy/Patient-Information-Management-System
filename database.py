@@ -224,14 +224,14 @@ class Database:
 
 
 """EXAMPLE CODE FOR DATABASE CHANGES"""
-db = Database()
-db.connect(ADMINUSER, ADMINPASS)
-db.set_user_role('administrator')
-
-patient = Patient(firstname='Julia', lastname='Duff', sex='F')
-patient.randomize_all_missing_data()
-db.add_patient(patient)
-db.commit_changes(override=False)
+# db = Database()
+# db.connect(ADMINUSER, ADMINPASS)
+# db.set_user_role('administrator')
+#
+# patient = Patient(firstname='Julia', lastname='Duff', sex='F')
+# patient.randomize_all_missing_data()
+# db.add_patient(patient)
+# db.commit_changes(override=False)
 
 # returns all patients with firstname beginning with Jo
 db.search_patient_by_name(firstname='Jo')
