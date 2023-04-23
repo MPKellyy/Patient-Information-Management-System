@@ -265,7 +265,14 @@ def run_gui():
 
         buttons_frame = ttk.Frame(root, width=1260, height=110, borderwidth=5, relief='solid')
         buttons_frame.pack()
+        buttons_frame.grid_propagate(False)
         buttons_frame.pack_propagate(False)
+        buttons_frame.rowconfigure(1, weight=1)
+        for i in range(1, 5):
+            buttons_frame.columnconfigure(i, weight=1)
+
+        account_label = ttk.Label(buttons_frame, text=db.get_username_role_str(), font=('Arial', 15))
+        account_label.grid(row=1, column=1, sticky='w')
 
         def logout():
             global db
@@ -274,19 +281,19 @@ def run_gui():
             buttons_frame.destroy()
             open_login()
         logout_button = ttk.Button(buttons_frame, text="Log Out", command=logout)
-        logout_button.pack(anchor='w')
+        logout_button.pack(side=RIGHT)
 
         def back():
             patient_frame.destroy()
             buttons_frame.destroy()
             open_landing()
         back_button = ttk.Button(buttons_frame, text="Back", command=back)
-        back_button.pack(anchor='w')
+        back_button.pack(side=RIGHT)
 
         def export():
             report_exporter.generate_report([patient], db.execute("SELECT CURRENT_ROLE();"))
         export_button = ttk.Button(buttons_frame, text="Export Report", command=export)
-        export_button.pack(anchor='e')
+        export_button.pack(side=RIGHT)
 
         edit_or_save = True
         patient_name_edit = ttk.Entry(patient_frame, width=38)
@@ -411,10 +418,11 @@ def run_gui():
                 edit_or_save = True
         edit_button = ttk.Button(buttons_frame, text="Edit Info", command=edit_button_function)
         if tier >= 1:
-            edit_button.pack(anchor='w')
+            edit_button.pack(side=RIGHT)
 
     # landing page, has search bar, results window, various buttons at the bottom
     def open_landing():
+        global db
         # left frame, for search bar and options (?)
         search_frame = ttk.Frame(root, width=400, height=580, borderwidth=5, relief='solid', padding='0i')
         search_frame.pack(side=LEFT, anchor='nw', padx=10, pady=10)
@@ -503,16 +511,18 @@ def run_gui():
         buttons_frame.columnconfigure(3, weight=1)
         buttons_frame.rowconfigure(1, weight=1)
 
+        account_label = ttk.Label(buttons_frame, text=db.get_username_role_str(), font=('Arial', 15))
+        account_label.grid(row=1, column=1, sticky='w')
+
         def log_out():
             global db
             db.close()
-            print('bye')
             search_frame.destroy()
             results_frame.destroy()
             buttons_frame.destroy()
             open_login()
         logout_button = ttk.Button(buttons_frame, text='Log Out', command=log_out)
-        logout_button.grid(row=1, column=2, sticky='e')
+        logout_button.grid(row=1, column=2)
 
         # button for exporting reports on all patients
         def export_all_patients():
@@ -524,14 +534,13 @@ def run_gui():
                 report_exporter.generate_report(list_of_patients, db.execute("SELECT CURRENT_ROLE();"))
 
         export_button = ttk.Button(buttons_frame, text="Export All Patients", command=export_all_patients)
-        export_button.grid(row=1, column=3, sticky='e')
+        export_button.grid(row=1, column=3)
 
-        def patient_select(e):
-            print(e)
+        def patient_select(patient):
             search_frame.destroy()
             results_frame.destroy()
             buttons_frame.destroy()
-            open_patient_info(e)
+            open_patient_info(patient)
 
 
 
