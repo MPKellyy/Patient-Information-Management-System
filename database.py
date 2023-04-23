@@ -157,7 +157,7 @@ class Database:
             else:
                 firstname, lastname = literal(name.split(" ")[0] + '%'), literal(name.split(" ")[0] + '%')
             query = self.patient_table + " WHERE firstname LIKE " + firstname + \
-                    " OR lastname LIKE " + lastname
+                    " AND lastname LIKE " + lastname
         elif firstname and lastname:
             firstname, lastname = literal(firstname + '%'), literal(lastname + '%')
             query = self.patient_table + " WHERE firstname LIKE " + firstname + \

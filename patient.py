@@ -453,6 +453,10 @@ class Patient:
             self.data['insurance_num'] = new
             self.changes.append('insurance_num')
 
+    def set_edited(self, new):
+        # do nothing
+        pass
+
     # methods for adding to 'list' fields
     # def add_doctor_note(self):
     #
