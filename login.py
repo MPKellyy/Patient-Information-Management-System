@@ -455,6 +455,7 @@ def run_gui():
             global db
             search_results = db.search_patient_by_name(name=name, firstname=firstname, lastname=lastname)
             result_list: list[Frame] = list()
+
             for i in range(len(search_results)):
                 patient = search_results[i]
                 # would have made search before this and now displaying results
@@ -472,11 +473,12 @@ def run_gui():
                 patient_phone_label.grid(column=3, row=1, sticky='w')
                 patient_address_label = ttk.Label(frame, text=patient.address)
                 patient_address_label.grid(column=4, row=1, sticky='w')
-                frame.bind('<Double-Button-1>', lambda p=patient: patient_select(patient))
+                frame.bind('<Double-Button-1>', lambda e, p=patient: patient_select(p))
                 result_list.append(frame)
 
+
         # right frame, for displaying results
-        results_frame = ttk.Frame(root, width=850, height=580, borderwidth=5, relief='solid', padding=0)
+        results_frame = ttk.Frame(root, width=850, height=700, borderwidth=5, relief='solid', padding=0)
         results_frame.pack(side=RIGHT, anchor='ne', padx=10, pady=10)
         results_frame.pack_propagate(False)
         # need a canvas and another frame to make it scrollable (thanks tkinter)
@@ -492,10 +494,14 @@ def run_gui():
         results_canvas.create_window((0, 0), window=results_canvas_frame, anchor='nw')
 
         # bottom frame with buttons
-        buttons_frame = ttk.Frame(root, width=1260, height=110, borderwidth=5, relief='solid')
+        buttons_frame = ttk.Frame(root, width=400, height=110, borderwidth=5, relief='solid')
         buttons_frame.pack()
-        buttons_frame.pack_propagate(False)
-        buttons_frame.place(anchor='nw', x=10, y=600)
+        buttons_frame.grid_propagate(False)
+        buttons_frame.place(anchor='w', x=10, y=655)
+        buttons_frame.columnconfigure(1, weight=3)
+        buttons_frame.columnconfigure(2, weight=1)
+        buttons_frame.columnconfigure(3, weight=1)
+        buttons_frame.rowconfigure(1, weight=1)
 
         def log_out():
             global db
@@ -506,7 +512,7 @@ def run_gui():
             buttons_frame.destroy()
             open_login()
         logout_button = ttk.Button(buttons_frame, text='Log Out', command=log_out)
-        logout_button.pack(anchor='w', side=LEFT, padx=20)
+        logout_button.grid(row=1, column=2, sticky='e')
 
         # button for exporting reports on all patients
         def export_all_patients():
@@ -518,10 +524,10 @@ def run_gui():
                 report_exporter.generate_report(list_of_patients, db.execute("SELECT CURRENT_ROLE();"))
 
         export_button = ttk.Button(buttons_frame, text="Export All Patients", command=export_all_patients)
-        export_button.pack(anchor='w')
+        export_button.grid(row=1, column=3, sticky='e')
 
         def patient_select(e):
-            print('select')
+            print(e)
             search_frame.destroy()
             results_frame.destroy()
             buttons_frame.destroy()
