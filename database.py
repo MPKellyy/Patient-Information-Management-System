@@ -132,6 +132,15 @@ class Database:
                 print(e)
                 #print("You are logged in as a " + self.role + ". You do not have access to field: " + key)
 
+        # keep track of timestamp edited
+        query = "UPDATE patient_medical SET edited = CURRENT_TIMESTAMP() WHERE patientID = " \
+                + str(patient.patientID) + ";"
+        print(query)
+        try:
+            self.execute(query)
+        except Exception as e:
+            print(e)
+
     def search_patient_by_name(self, name=None, firstname=None, lastname=None):
         """example use:
             input: name="John Doe" or firstname="John", lastname="Doe" -> returns all patients named John Doe
@@ -228,13 +237,11 @@ class Database:
 # db.connect(ADMINUSER, ADMINPASS)
 # db.set_user_role('administrator')
 #
-# patient = Patient(firstname='Julia', lastname='Duff', sex='F')
-# patient.randomize_all_missing_data()
-# db.add_patient(patient)
-# db.commit_changes(override=False)
-
 # # returns all patients with firstname beginning with Jo
-# db.search_patient_by_name(firstname='Jo')
+# p = db.search_patient_by_name(firstname='Jo')[0]
+# p.set_age(str(int(p.age) + 1))
+# db.save_patient_data(p)
+
 #
 # # returns all patients with lastname beginning with Doe
 # db.search_patient_by_name(firstname='Doe')

@@ -25,7 +25,7 @@ class Patient:
                  building=None, marital_status=None, employment_status=None, employer=None,
                  insurance_provider=None, insurance_contact=None, invoice=None, patient_amount_paid=None,
                  insurance_amount_paid=None, pay_plan=None, pay_history=None, insurance_account_num=None,
-                 charge_history=None, insurance_num=None, edited=None, data=None):
+                 charge_history=None, insurance_num=None, data=None):
 
         if not data:
             data = {}
@@ -605,8 +605,16 @@ class Patient:
         self.set_family_doctor(names.get_full_name())
 
     def _set_random_phone_number(self):
-        phone_number = ''
-        for i in range(0, 10):
+        phone_number = 'home: 256'
+        for i in range(0, 7):
+            phone_number += str(random.randint(0, 9))
+
+        phone_number += ' | work: 256'
+        for i in range(0, 7):
+            phone_number += str(random.randint(0, 9))
+
+        phone_number += ' | mobile: 256'
+        for i in range(0, 7):
             phone_number += str(random.randint(0, 9))
 
         self.set_phone_number(phone_number)
