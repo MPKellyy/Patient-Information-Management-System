@@ -102,7 +102,7 @@ class Database:
         self.role = role
 
         if self.role == 'administrator':
-            self.patient_table = 'patient_medical'
+            self.patient_table = 'patient_administrator'
         else:
             self.patient_table = "patient_" + self.role
 
@@ -208,6 +208,8 @@ class Database:
             username_role_str += "Nurse"
         elif role == "`doctor`":
             username_role_str += "Doctor"
+        elif role == "`administrator`":
+            username_role_str += "Administrator"
         else:
             username_role_str += "Error Retrieving Role"
         return username_role_str

@@ -44,20 +44,129 @@ def test_dict_execute():
 
 
 def test_connect():
+    '''
+        Preamble:
+            test connecting to the DB
+
+        Post:
+            PASS as of 4/23/2023
+        '''
     testdb = Database()
     testdb.connect(ADMINUSER,ADMINPASS)
 
 def test_get_all_patients():
+    '''
+    Preamble:
+        tests getting all patients
+
+    Post:
+        PASS as of 4/23/2023
+    '''
     db.get_all_patients()
 
 def test_get_columns():
+    '''
+        Preamble:
+            gets all the columns in a table
+
+        Post:
+            PASS as of 4/23/2023
+    '''
     db.get_columns('patient_medical')
 
 def test_get_user_role():
+    '''
+        Preamble:
+            tests catching the user role, outputs the role
+
+        Post:
+            PASS as of 4/23/2023
+        '''
     db.get_user_role()
+    print(db.role)
 
 def test_execute():
+    '''
+        Preamble:
+            executes a simple query
+
+        Post:
+            PASS as of 4/23/2023
+        '''
     db.execute("SELECT * FROM patient_medical WHERE patientID = 3")
+
+def test_search_patient_by_name():
+    '''
+        Preamble:
+            tests a partial search of everyone named john
+
+        Post:
+            PASS as of 4/23/2023
+        '''
+    db.search_patient_by_name(None, 'john')
+
+def test_select():
+    '''
+        Preamble:
+            selects something from a table
+
+        Post:
+            PASS as of 4/23/2023
+        '''
+    db.select('*','patient_medical')
+
+def test_select_all():
+    '''
+        Preamble:
+            selects everything from a table
+
+        Post:
+            PASS as of 4/23/2023
+        '''
+    db.select_all('patient_medical')
+
+def test_set_user_role():
+    '''
+        Preamble:
+            tests changing the user role by setting the role
+
+        Post:
+            PASS as of 4/23/2023
+        '''
+    db.set_user_role('administrator')
+
+#def test_close():
+'''
+    Preamble:
+        closes the connection to the DB.
+        COMMENTED OUT BECAUSE OF DESTRUCTIVE CONSEQUENSES TO REST OF FILE
+    Post:
+        PASS as of 4/23/2023
+    '''
+#    db.close()
+
+def test_connect():
+    '''
+        Preamble:
+            connects to the database
+
+        Post:
+            PASS as of 4/23/2023
+        '''
+    testdb = Database()
+    testdb.connect(ADMINUSER,ADMINPASS)
+
+def test_get_username_role_str():
+    '''
+        Preamble:
+            gets the username role as a string
+
+        Post:
+            PASS as of 4/23/2023
+        '''
+    db.get_username_role_str()
+
+
 
 
 
