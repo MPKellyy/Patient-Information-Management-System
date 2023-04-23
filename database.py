@@ -233,17 +233,17 @@ class Database:
 # db.add_patient(patient)
 # db.commit_changes(override=False)
 
-# returns all patients with firstname beginning with Jo
-db.search_patient_by_name(firstname='Jo')
-
-# returns all patients with lastname beginning with Doe
-db.search_patient_by_name(firstname='Doe')
-
-# returns all patients with initials J. D.
-db.search_patient_by_name(firstname='J', lastname='D')
-
-# returns all patient with first initial J. OR last initial D.
-db.search_patient_by_name(name='J D')
+# # returns all patients with firstname beginning with Jo
+# db.search_patient_by_name(firstname='Jo')
+#
+# # returns all patients with lastname beginning with Doe
+# db.search_patient_by_name(firstname='Doe')
+#
+# # returns all patients with initials J. D.
+# db.search_patient_by_name(firstname='J', lastname='D')
+#
+# # returns all patient with first initial J. OR last initial D.
+# db.search_patient_by_name(name='J D')
 
 
 
