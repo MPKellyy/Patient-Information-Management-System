@@ -186,6 +186,23 @@ class Database:
         self.cursor.close()
         self.connection.close()
 
+    def get_username_role_str(self):
+        role = self.execute("SELECT CURRENT_ROLE();")
+        role = role[0][0].split("@")[0]
+        username = self.execute('SELECT CURRENT_USER();')
+        username_role_str = username[0][0].split("@")[0] + '\n'
+        if role == "`volunteer`":
+            username_role_str += "Volunteer"
+        elif role == "`office`":
+            username_role_str += "Office Staff"
+        elif role == "`nurse`":
+            username_role_str += "Nurse"
+        elif role == "`doctor`":
+            username_role_str += "Doctor"
+        else:
+            username_role_str += "Error Retrieving Role"
+        return username_role_str
+
     # PRIVATE METHODS
     def _patients_query_to_objects(self, patients_list):
         output = []
