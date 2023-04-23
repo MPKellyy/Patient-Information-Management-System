@@ -20,6 +20,8 @@ class Database:
         # if left blank, random patient will be generated
         if not patient:
             patient = self.create_random_patient()
+        else:
+            patient.patientID = self.get_next_id()
         fields = ''
         values = ''
 
@@ -116,15 +118,28 @@ class Database:
         return output
 
     def save_patient_data(self, patient):
+        print(patient.changes)
+        medical_data = patient.get_patient_medical_data()
         for key in patient.changes:
-            query = "UPDATE " + self.patient_table + " SET " + str(key) + " = " + literal(patient.data[key]) \
+            table_to_update = 'patient_medical' if key in medical_data else 'patient_accounting'
+            query = "UPDATE " + table_to_update + " SET " + str(key) + " = " + literal(patient.data[key]) \
                     + " WHERE patientID = " + str(patient.patientID) + ";"
             print(query)
             try:
                 self.execute(query)
                 print("Change to field \'" + key + "\' successful. ")
-            except pymysql.err.OperationalError:
-                print("You are logged in as a " + self.role + ". You do not have access to field: " + key)
+            except Exception as e:
+                print(e)
+                #print("You are logged in as a " + self.role + ". You do not have access to field: " + key)
+
+        # keep track of timestamp edited
+        query = "UPDATE patient_medical SET edited = CURRENT_TIMESTAMP() WHERE patientID = " \
+                + str(patient.patientID) + ";"
+        print(query)
+        try:
+            self.execute(query)
+        except Exception as e:
+            print(e)
 
     def search_patient_by_name(self, name=None, firstname=None, lastname=None):
         """example use:
@@ -138,20 +153,21 @@ class Database:
         if name:
             name_split = name.split(" ")
             if len(name_split) == 2:
-                firstname, lastname = literal(name.split(" ")[0]), literal(name.split(" ")[1])
+                firstname, lastname = literal(name.split(" ")[0] + '%'), literal(name.split(" ")[1] + '%')
             else:
-                firstname, lastname = literal(name.split(" ")[0]), literal(name.split(" ")[0])
-            query = self.patient_table + " WHERE firstname = " + firstname + \
-                    " OR lastname = " + lastname + ";"
+                firstname, lastname = literal(name.split(" ")[0] + '%'), literal(name.split(" ")[0] + '%')
+            query = self.patient_table + " WHERE firstname LIKE " + firstname + \
+                    " OR lastname LIKE " + lastname
         elif firstname and lastname:
-            query = self.patient_table + " WHERE firstname = " + firstname + \
-                    " AND lastname = " + lastname + ";"
+            firstname, lastname = literal(firstname + '%'), literal(lastname + '%')
+            query = self.patient_table + " WHERE firstname LIKE " + firstname + \
+                    " AND lastname LIKE " + lastname
         elif firstname and not lastname:
-            firstname = literal(firstname)
-            query = self.patient_table + " WHERE firstname = " + firstname + ";"
+            firstname = literal(firstname + '%')
+            query = self.patient_table + " WHERE firstname LIKE " + firstname
         elif lastname and not firstname:
-            lastname = literal(lastname)
-            query = self.patient_table + " WHERE lastname = " + lastname + ";"
+            lastname = literal(lastname + '%')
+            query = self.patient_table + " WHERE lastname LIKE " + lastname
         else:
             return self.get_all_patients()
 
@@ -161,13 +177,15 @@ class Database:
         return self.execute("SELECT " + arg1 + " FROM " + arg2 + ";")  # execute query
 
     def select_all(self, arg1):
+        query = "SELECT * FROM " + arg1 + ";"
+        print(query)
         try:
-            output = self.dict_execute("SELECT * FROM " + arg1 + ";")  # queries the table
+            output = self.dict_execute(query)  # queries the table
+            return output
         except pymysql.err.ProgrammingError:  # in case table doesnt exist
-            output = "Table Does not exist"
+            print("Table Does not exist")
         except pymysql.err.OperationalError:
-            output = "Access denied"
-        return output
+            print("Access denied")
 
     def set_user_role(self, role):
         self.role = role
@@ -176,6 +194,23 @@ class Database:
     def close(self):
         self.cursor.close()
         self.connection.close()
+
+    def get_username_role_str(self):
+        role = self.execute("SELECT CURRENT_ROLE();")
+        role = role[0][0].split("@")[0]
+        username = self.execute('SELECT CURRENT_USER();')
+        username_role_str = username[0][0].split("@")[0] + '\n'
+        if role == "`volunteer`":
+            username_role_str += "Volunteer"
+        elif role == "`office`":
+            username_role_str += "Office Staff"
+        elif role == "`nurse`":
+            username_role_str += "Nurse"
+        elif role == "`doctor`":
+            username_role_str += "Doctor"
+        else:
+            username_role_str += "Error Retrieving Role"
+        return username_role_str
 
     # PRIVATE METHODS
     def _patients_query_to_objects(self, patients_list):
@@ -202,12 +237,22 @@ class Database:
 # db.connect(ADMINUSER, ADMINPASS)
 # db.set_user_role('administrator')
 #
-# patients = db.get_all_patients()
-#
-# p = patients[0]
-# p.set_doctor_notes("test \n test")
+# # returns all patients with firstname beginning with Jo
+# p = db.search_patient_by_name(firstname='Jo')[0]
+# p.set_age(str(int(p.age) + 1))
 # db.save_patient_data(p)
-# print(p)
+
+#
+# # returns all patients with lastname beginning with Doe
+# db.search_patient_by_name(firstname='Doe')
+#
+# # returns all patients with initials J. D.
+# db.search_patient_by_name(firstname='J', lastname='D')
+#
+# # returns all patient with first initial J. OR last initial D.
+# db.search_patient_by_name(name='J D')
+
+
 
 
 

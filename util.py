@@ -11,8 +11,9 @@ def create_patient_id(i):
 
 
 def literal(s):
+    s = str(s)
     if s:
-        s = s.replace('\'', '\'\'').replace('\n', ' ')
+        s = s.replace('\'', '').replace('\'', '\'\'').replace('\n', ' ')
         return "\'" + str(s) + "\'"
     else:
         return "\'\'"

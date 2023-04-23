@@ -16,7 +16,7 @@ class Patient:
         3. Create a patient using completely randomly-generated data. (WORKING!)
     """
 
-    def __init__(self, patientID, firstname=None, lastname=None, room_number=None, bed_number=None,
+    def __init__(self, patientID=None, firstname=None, lastname=None, room_number=None, bed_number=None,
                  sex=None, age=None, height=None, weight=None, race=None, dob=None, care_provider=None,
                  current_status=None, medical_risks=None, allowed_visitors=None, restricted_visitors=None,
                  admission_date=None, admission_reason=None, discharge_date=None, emergency_contacts=None,
@@ -78,9 +78,6 @@ class Patient:
         self.insurance_account_num = insurance_account_num
         self.charge_history = charge_history
         self.insurance_num = insurance_num
-
-        # dictionary version of data
-        self.data = data
 
         # keep track of edits
         self.changes = []
@@ -456,7 +453,11 @@ class Patient:
             self.data['insurance_num'] = new
             self.changes.append('insurance_num')
 
-            # private methods
+    # methods for adding to 'list' fields
+    # def add_doctor_note(self):
+    #
+
+    # private methods
 
     def _parse_database_input(self):
         # TODO: complete this function
@@ -604,8 +605,16 @@ class Patient:
         self.set_family_doctor(names.get_full_name())
 
     def _set_random_phone_number(self):
-        phone_number = ''
-        for i in range(0, 10):
+        phone_number = 'home: 256'
+        for i in range(0, 7):
+            phone_number += str(random.randint(0, 9))
+
+        phone_number += ' | work: 256'
+        for i in range(0, 7):
+            phone_number += str(random.randint(0, 9))
+
+        phone_number += ' | mobile: 256'
+        for i in range(0, 7):
             phone_number += str(random.randint(0, 9))
 
         self.set_phone_number(phone_number)
