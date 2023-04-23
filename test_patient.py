@@ -25,11 +25,13 @@ PROPER TESTING FORMAT:
 
 def test_create_random_patient_data():
     """
-    Autofills patient data to create test Patient objects.
+    Preamble:
+        Autofills patient data to create test Patient objects.
 
-    Inputs: none
-    Output: Patient object where no fields are left blank.
-
+        Inputs: none
+        Output: Patient object where no fields are left blank.
+    Post:
+        PASS as of 4/23/2023
     """
     # create random patient
     patient = Patient(0)
@@ -42,12 +44,14 @@ def test_create_random_patient_data():
 
 def test_randomize_all_missing_data():
     """
-    Autofills patient data to create test Patient objects within context
-    of existing/filled data.
+        Preamble:
+            Autofills patient data to create test Patient objects within context
+            of existing/filled data.
 
-    Inputs: varied
-    Output: Patient object where no fields are left blank.
-
+            Inputs: varied
+            Output: Patient object where no fields are left blank.
+        Post:
+            PASS as of 4/23/2023
     """
     patient = Patient(0, age=25)
     patient_attributes = patient.get_attributes()
@@ -62,17 +66,17 @@ def test_randomize_all_missing_data():
     # assert that age has not changed
     assert(patient.age == 25)
 
-
 def test_all_patient_setters():
     """
-    Various setters for patient attributes.
+        Preamble:
+            Various setters for patient attributes.
 
-    Inputs: new value of attribute
-    Output: None
-
+            Inputs: new value of attribute
+            Output: None
+        Post:
+            PASS as of 4/23/2023
     """
-
-    # create random patient
+     # create random patient
     patient = Patient(0)
 
     # test all attribute setters except set_patientID(), which cannot be edited

@@ -26,11 +26,13 @@ PROPER TESTING FORMAT:
 
 def _report(username, password, role, num_patients=1):
     """
-    Helper function that generates report for each test case wrapping it
+        Preamble:
+            Helper function that generates report for each test case wrapping it
 
-    Inputs: username of test account, password of test account, role of account, number of patients to report on
+            Inputs: username of test account, password of test account, role of account, number of patients to report on
+        Post:
+            PASS as of 4/23/2023
     """
-
     print("")
 
     # Handling user mis-input

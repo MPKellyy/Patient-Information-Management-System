@@ -22,47 +22,7 @@ PROPER TESTING FORMAT:
         do not include unexpected output or errors not directly tied to the tested functions.
 '''
 
-
-def test_table_creation():
-    """
-    Preamble:
-        Test case for table creation, expecting visually correct output in console and PASS rating from Pycharm
-
-        Note: Will always pass barring any critical errors thrown, so make sure to review console contents as well
-    Post:
-        PASS as of 4/19/2023
-    """
-
-    print("\n***Before table creation***")
-    display_tables()
-
-    print("***After table creation***")
-    create_table("test_table", {"col1": "INT", "col2": "INT"})
-    display_tables()
-
-    print("***After table deletion***")
-    delete_table("test_table")
-    display_tables()
-
-
-def test_display_accounts():
-    """
-    Preamble:
-        Test case for displaying all accounts in database, expecting visually correct output in console and PASS rating
-        from Pycharm
-
-        Note: Will always pass barring any critical errors thrown, so make sure to review console contents as well
-    Post:
-        PASS as of 4/19/2023
-    """
-    print("\n***Displaying accounts without permissions flag***")
-    display_accounts()
-
-    print("***Displaying accounts with permissions flag set***")
-    display_accounts(show_permissions=True)
-
-
-def test_account_creation():
+def test_create_account():
     """
     Preamble:
         Test case for creating every account tier, expecting visually correct output in console and PASS rating
@@ -94,3 +54,63 @@ def test_account_creation():
     delete_account("nurse_test")
     delete_account("doctor_test")
     display_accounts()
+
+
+def test_display_accounts():
+    """
+    Preamble:
+        Test case for displaying all accounts in database, expecting visually correct output in console and PASS rating
+        from Pycharm
+
+        Note: Will always pass barring any critical errors thrown, so make sure to review console contents as well
+    Post:
+        PASS as of 4/19/2023
+    """
+    print("\n***Displaying accounts without permissions flag***")
+    display_accounts()
+
+    print("***Displaying accounts with permissions flag set***")
+    display_accounts(show_permissions=True)
+
+
+def test_show_account_permission():
+    show_account_permissions('volunteer')
+
+
+def test_create_table_delete_table():
+    """
+    Preamble:
+        Test case for table creation, expecting visually correct output in console and PASS rating from Pycharm
+
+        Note: Will always pass barring any critical errors thrown, so make sure to review console contents as well
+    Post:
+        PASS as of 4/19/2023
+    """
+
+    print("\n***Before table creation***")
+    display_tables()
+
+    print("***After table creation***")
+    create_table("test_table", {"col1": "INT", "col2": "INT"})
+    display_tables()
+
+    print("***After table deletion***")
+    delete_table("test_table")
+    display_tables()
+
+def test_display_table():
+    """
+        Preamble:
+            displays all tables in a list to the console
+        Post:
+            PASS as of 4/23/2023
+        """
+    display_tables()
+
+
+
+
+
+
+
+
