@@ -74,6 +74,12 @@ def test_display_accounts():
 
 
 def test_show_account_permission():
+    """
+    Preamble:
+        displays the permissions currently given to an account
+    Post:
+        PASS as of 4/23/2023
+    """
     show_account_permissions('volunteer')
 
 
