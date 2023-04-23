@@ -16,7 +16,7 @@ class Patient:
         3. Create a patient using completely randomly-generated data. (WORKING!)
     """
 
-    def __init__(self, patientID, firstname=None, lastname=None, room_number=None, bed_number=None,
+    def __init__(self, patientID=None, firstname=None, lastname=None, room_number=None, bed_number=None,
                  sex=None, age=None, height=None, weight=None, race=None, dob=None, care_provider=None,
                  current_status=None, medical_risks=None, allowed_visitors=None, restricted_visitors=None,
                  admission_date=None, admission_reason=None, discharge_date=None, emergency_contacts=None,
@@ -25,7 +25,7 @@ class Patient:
                  building=None, marital_status=None, employment_status=None, employer=None,
                  insurance_provider=None, insurance_contact=None, invoice=None, patient_amount_paid=None,
                  insurance_amount_paid=None, pay_plan=None, pay_history=None, insurance_account_num=None,
-                 charge_history=None, insurance_num=None, data=None):
+                 charge_history=None, insurance_num=None, edited=None, data=None):
 
         if not data:
             data = {}
@@ -78,9 +78,6 @@ class Patient:
         self.insurance_account_num = insurance_account_num
         self.charge_history = charge_history
         self.insurance_num = insurance_num
-
-        # dictionary version of data
-        self.data = data
 
         # keep track of edits
         self.changes = []
@@ -456,7 +453,11 @@ class Patient:
             self.data['insurance_num'] = new
             self.changes.append('insurance_num')
 
-            # private methods
+    # methods for adding to 'list' fields
+    # def add_doctor_note(self):
+    #
+
+    # private methods
 
     def _parse_database_input(self):
         # TODO: complete this function
