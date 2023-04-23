@@ -318,7 +318,8 @@ def generate_report(patients, role_query):
         filepath = filedialog.asksaveasfilename(defaultextension=".pdf", filetypes=[("PDF Files", "*.pdf")])
         if not filepath.endswith(".pdf"):
             filepath += ".pdf"
-        assert len(filepath) != 0
+
+        assert filepath != ".pdf"
     except:
         print("Save report aborted")
         return
